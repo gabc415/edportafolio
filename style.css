@@ -1,14 +1,20 @@
 body {
-    font-family: sans-serif;
+    /* Use a common monospace font */
+    font-family: Consolas, "Courier New", monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: #0000AA; /* Dark blue background like DOS */
+    color: #FFFFFF; /* White text */
+}
+
+h1 {
+    color: #FFFF55; /* Yellow heading */
 }
 
 #gameCanvas {
-    border: 1px solid black;
-    background-color: #87CEEB; /* Sky blue */
+    border: 1px solid #AAAAAA; /* Grey border */
+    background-color: #00AAAA; /* Cyan sky color */
     margin-top: 10px;
 }
 
@@ -16,36 +22,47 @@ body {
     display: flex;
     justify-content: space-around;
     width: 800px;
-    background-color: #ddd;
+    background-color: #555555; /* Dark grey info bar */
+    color: #FFFFFF;
     padding: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #AAAAAA;
+    font-size: 0.9em; /* Slightly smaller text */
 }
 
 #gameInfo p {
-    margin: 0 10px;
+    margin: 2px 10px;
 }
 
 #controls {
     margin-top: 10px;
     padding: 10px;
-    background-color: #eee;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    background-color: #AAAAAA; /* Lighter grey controls */
+    border: 1px solid #FFFFFF;
+    border-radius: 0; /* Square corners */
+    color: #000000; /* Black text for controls */
 }
 
 #controls label {
-    margin: 0 5px 0 15px;
+    margin: 0 5px 0 10px;
 }
 
 #controls input {
-    width: 60px;
+    width: 50px;
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    font-family: Consolas, "Courier New", monospace;
 }
 
 #controls button {
-    margin-left: 20px;
-    padding: 5px 10px;
+    margin-left: 15px;
+    padding: 3px 8px;
     cursor: pointer;
+    background-color: #CCCCCC; /* Light grey button */
+    border: 1px outset #FFFFFF;
+    color: #000000;
+    font-family: Consolas, "Courier New", monospace;
 }
 
-/* Simple styles for game elements (drawn in JS) */
-/* Colors will be set in JavaScript */
+#controls button:active {
+    border-style: inset;
+}
