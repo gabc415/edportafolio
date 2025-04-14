@@ -1,8 +1,242 @@
-Teaching Philosophy and Approach
-
-My philosophy as an educator is rooted in the belief that effective teaching involves a dynamic interplay between innovative technology and the irreplaceable value of hands-on learning. As a chemist with a background in synthesis and materials research, I recognize the power of visualization and modeling in understanding complex molecular interactions. This insight directly informs my approach to EdTech integration.   
-With a commitment to leveraging tools that enhance students' conceptual understanding and engagement. For instance, interactive data models offer transformative possibilities in chemistry education. Imagine students using their smartphones or tablets to visualize molecular structures in three dimensions, directly interacting with them in their 3D physical space. This can bridge the gap between abstract representations in textbooks and the tangible reality of molecules, fostering a deeper intuitive grasp of stereochemistry and reaction mechanisms. Similarly, virtual laboratory simulations provide a safe and cost-effective environment for students to explore chemical reactions that might be hazardous or resource-intensive in a traditional lab setting. These simulations can also promote inquiry-based learning, allowing students to design their experiments and test hypotheses without the constraints of time or the cost of materials. Visualization software is also a great tool to model different compounds and their properties.
-However, I firmly believe that technology is a tool to augment, not replace, traditional pedagogical approaches. Hands-on laboratory work remains essential for developing crucial skills in observation, data collection, and experimental design. The tactile experience of measuring reactants, observing color changes, and analyzing products provides a concrete foundation for theoretical knowledge. There is also immense value in students developing their problem-solving skills without relying solely on calculators. Strong mental math skills and the ability to estimate and approximate are critical for chemical intuition and are transferable to many other disciplines.
-To create a truly engaging and effective learning environment, I strive to incorporate principles of active learning and constructivism. Active learning strategies, such as collaborative problem-solving, peer teaching, and inquiry-based projects, encourage students to take ownership of their learning and develop critical thinking skills. Constructivism emphasizes the importance of students building their understanding upon experience and reflection, which aligns perfectly with the blended approach of technology-enhanced and hands-on learning.
-My experience in training deep learning models to represent scientific information in an engaging format has further shaped my perspective on EdTech. I have witnessed firsthand the potential of AI to personalize learning, provide targeted feedback, and generate dynamic learning materials. This experience has made me even more interested in exploring the ethical and effective integration of AI tools in the chemistry classroom.   
-In conclusion, my teaching philosophy is centered on creating a dynamic and inclusive learning environment where technology and hands-on learning work in synergy to cultivate students' scientific curiosity, critical thinking abilities, and a lifelong passion for chemistry. This involves thoughtfully selecting and integrating EdTech tools, prioritizing active learning strategies, and continuously reflecting on and refining my pedagogical practices to best serve the diverse needs of my students.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teaching Philosophy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.7;
+            color: #4a5568; /* Slightly darker, more readable text */
+        }
+        .container {
+            max-width: 900px; /* Increased max-width for better readability on larger screens */
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        nav {
+            background-color: #f7fafc; /* Light background for navbar */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0; /* Subtle border */
+        }
+        nav ul {
+            display: flex;
+            justify-content: center; /* Center the navigation items */
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        nav ul li {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        nav ul li a {
+            color: #4f46e5; /* Consistent link color */
+            text-decoration: none;
+            font-weight: 600; /* Make links bold */
+            transition: color 0.3s ease; /* Smooth transition */
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem; /* Rounded corners for links */
+        }
+        nav ul li a:hover {
+            color: #fff;
+            background-color: #4f46e5; /* Blue background on hover */
+        }
+        header {
+            background-color: #4f46e5; /* Consistent header color */
+            color: #fff;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem; /* Slightly larger heading */
+            font-weight: 700;  /* Strong font weight for the title */
+            margin-bottom: 0.5rem;
+        }
+        header p {
+            font-size: 1.1rem; /* Increased font size for description */
+            color: #f7fafc; /* Slightly lighter text for description */
+        }
+        main {
+            padding-top: 3rem; /* Increased padding for main content */
+            padding-bottom: 3rem;
+        }
+        section {
+            margin-bottom: 3rem; /* Increased margin between sections */
+            background-color: #fff; /* Consistent background color for sections */
+            border-radius: 0.75rem; /* Rounded corners for sections */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+            padding: 2rem;
+        }
+        section h2 {
+            color: #4f46e5; /* Consistent section heading color */
+            font-size: 2rem; /* Increased font size for section headings */
+            font-weight: 700;
+            margin-bottom: 2rem; /* Increased margin below headings */
+            line-height: 1.2; /* Improved line height for headings */
+        }
+        section h3 {
+            color: #4f46e5; /* Consistent subheading color */
+            font-size: 1.5rem; /* Increased font size for subheadings */
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        section p {
+            font-size: 1.1rem; /* Increased font size for paragraphs */
+            margin-bottom: 1.5rem; /* Increased margin below paragraphs */
+        }
+        ul, ol {
+            margin-left: 2rem; /* Consistent list indentation */
+            margin-bottom: 1.5rem;
+            list-style-position: inside;
+        }
+        li {
+            margin-bottom: 0.5rem; /* Spacing between list items */
+        }
+        footer {
+            background-color: #e5e7eb;
+            color: #4a5568;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            text-align: center;
+            border-top: 1px solid #d1d5db;
+        }
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+        footer a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            header h1 {
+                font-size: 2.25rem; /* Smaller heading on mobile */
+            }
+            section h2 {
+                font-size: 1.75rem; /* Smaller section heading on mobile */
+            }
+            nav ul {
+                flex-direction: column; /* Stack nav items on mobile */
+            }
+            nav ul li {
+                margin-left: 0.5rem;
+                margin-right: 0.5rem;
+                margin-bottom: 0.5rem; /* Add space between stacked items */
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#philosophy">Philosophy</a></li>
+            <li><a href="#examples">Examples</a></li>
+            <li><a href="#reflections">Reflections</a></li>
+            <li><a href="#game">Game</a></li>
+        </ul>
+    </nav>
+    <header>
+        <div class="container">
+            <h1>Teaching Philosophy and Approach</h1>
+            <p>My approach to education, incorporating technology and hands-on learning.</p>
+        </div>
+    </header>
+    <main class="container">
+        <section id="philosophy">
+            <h2>My Philosophy</h2>
+            <p>
+                My philosophy as an educator is rooted in the belief that effective teaching involves a dynamic interplay
+                between innovative technology and the irreplaceable value of hands-on learning. As a chemist with a background
+                in synthesis and materials research, I recognize the power of visualization and modeling in understanding
+                complex molecular interactions. This insight directly informs my approach to EdTech integration, with a
+                commitment to leveraging tools that enhance students' conceptual understanding and engagement.
+            </p>
+        </section>
+        <section id="role-of-tech">
+            <h2>The Role of Technology in Chemistry Education</h2>
+            <p>
+                Technology offers transformative possibilities in chemistry education. For instance, interactive data models
+                allow students to visualize molecular structures in three dimensions, directly interacting with them in
+                their physical space using smartphones or tablets. This bridges the gap between abstract representations
+                in textbooks and the tangible reality of molecules, fostering a deeper, more intuitive grasp of stereochemistry
+                and reaction mechanisms.
+            </p>
+            <p>
+                Virtual laboratory simulations provide another powerful tool. They offer a safe and cost-effective environment
+                for students to explore chemical reactions that might be hazardous or resource-intensive in a traditional
+                lab setting. These simulations can also promote inquiry-based learning, allowing students to design experiments
+                and test hypotheses without the constraints of time or the cost of materials. Additionally, visualization
+                software is invaluable for modeling compounds and their properties.
+            </p>
+        </section>
+        <section id="importance-of-hands-on">
+            <h2>The Importance of Hands-On Learning</h2>
+            <p>
+                However, I firmly believe that technology is a tool to augment, not replace, traditional pedagogical approaches.
+                Hands-on laboratory work remains essential for developing crucial skills in observation, data collection,
+                and experimental design. The tactile experience of measuring reactants, observing color changes,
+                and analyzing products provides a concrete foundation for theoretical knowledge. I also believe there is
+                immense value in students developing their problem-solving skills without relying solely on calculators.
+                Strong mental math skills and the ability to estimate and approximate are critical for developing chemical
+                intuition and are transferable to many other disciplines.
+            </p>
+        </section>
+        <section id="active-learning">
+            <h2>Active Learning and Constructivism</h2>
+            <p>
+                To create a truly engaging and effective learning environment, I strive to incorporate principles of active
+                learning and constructivism. Active learning strategies, such as collaborative problem-solving, peer teaching,
+                and inquiry-based projects, encourage students to take ownership of their learning and develop critical
+                thinking skills. Constructivism emphasizes the importance of students building their understanding upon
+                experience and reflection, which aligns perfectly with the blended approach of technology-enhanced
+                and hands-on learning.
+            </p>
+        </section>
+        <section id="ai-in-classroom">
+            <h2>Integrating AI in the Classroom</h2>
+            <p>
+                My experience in training deep learning models to represent scientific information in an engaging format
+                has further shaped my perspective on EdTech. I have witnessed firsthand the potential of AI to personalize
+                learning, provide targeted feedback, and generate dynamic learning materials. This experience has made me
+                even more interested in exploring the ethical and effective integration of AI tools in the chemistry
+                classroom.
+            </p>
+        </section>
+        <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>
+                In conclusion, my teaching philosophy is centered on creating a dynamic and inclusive learning environment
+                where technology and hands-on learning work in synergy to cultivate students' scientific curiosity,
+                critical thinking abilities, and a lifelong passion for chemistry. This involves thoughtfully selecting
+                and integrating EdTech tools, prioritizing active learning strategies, and continuously reflecting on
+                and refining my pedagogical practices to best serve the diverse needs of my students.
+            </p>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Gabriel Cabrera. All rights reserved.</p>
+            <p><a href="mailto:gabriel.cabrera@outlook.com">gabriel.cabrera@outlook.com</a></p>
+        </div>
+    </footer>
+</body>
+</html>
