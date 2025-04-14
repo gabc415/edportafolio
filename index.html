@@ -44,12 +44,12 @@
         }
         .nav-link:hover {
             color: #fff;
-            background-color: rgba(79, 70, 229, 1);
+            background-color: rgba(79, 70, 229, 0.9); /* Slightly transparent blue on hover */
             transform: translateY(-2px);
         }
         .nav-link:active {
             transform: translateY(0);
-            background-color: rgba(79, 70, 229, 0.8);
+            background-color: rgba(79, 70, 229, 0.7); /* Slightly darker blue on active */
         }
         main {
             padding-top: 2rem;
@@ -145,7 +145,7 @@
 <body class="bg-gray-100">
     <header class="bg-blue-600 text-white py-4">
         <div class="container">
-            <h1 class="text-3xl font-semibold">Gabriel Cabrera's E-Portfolio</h1>
+            <h1 class="text-3xl font-semibold">⌬ Gabriel Cabrera's E-Portfolio</h1>
             <p class="text-lg">Chemist and Chemistry Educator</p>
         </div>
     </header>
@@ -159,11 +159,31 @@
             </p>
             <nav class="mb-4">
                 <ul class="list-none space-x-4">
-                    <li class="inline-block"><a href="aboutme.html" class="nav-link">About Me</a></li>
-                    <li class="inline-block"><a href="philosophy.html" class="nav-link">EdTech and Teaching Philosophy</a></li>
-                    <li class="inline-block"><a href="examples.html" class="nav-link">Teaching with Technology Integration Examples</a></li>
-                    <li class="inline-block"><a href="reflections.html" class="nav-link">Reflections on Learning</a></li>
-                    <li class="inline-block"><a href="home.html" class="nav-link">Bored... Let's play a game</a></li>
+                    <li class="inline-block">
+                        <a href="aboutme.html" class="nav-link">
+                            👤<span style="margin-left: 0.5rem;">About Me</span>
+                        </a>
+                    </li>
+                    <li class="inline-block">
+                        <a href="philosophy.html" class="nav-link">
+                            💡<span style="margin-left: 0.5rem;">EdTech and Teaching Philosophy</span>
+                        </a>
+                    </li>
+                    <li class="inline-block">
+                        <a href="examples.html" class="nav-link">
+                            🧪<span style="margin-left: 0.5rem;">Teaching with Technology Integration Examples</span>
+                        </a>
+                    </li>
+                    <li class="inline-block">
+                        <a href="reflections.html" class="nav-link">
+                            📚<span style="margin-left: 0.5rem;">Reflections on Learning</span>
+                        </a>
+                    </li>
+                    <li class="inline-block">
+                        <a href="home.html" class="nav-link">
+                            🎮<span style="margin-left: 0.5rem;">Bored... Let's play a game</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
         </section>
