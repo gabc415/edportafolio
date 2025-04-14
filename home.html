@@ -3,70 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Gorillas AI</title>
+    <title>HTML Gorillas AI v2</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
     <style>
         body {
-            /* Use a common monospace font */
             font-family: Consolas, "Courier New", monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #0000AA; /* Dark blue background like DOS */
-            color: #FFFFFF; /* White text */
+            background-color: #0000AA;
+            color: #FFFFFF;
             margin: 0;
-            padding-top: 10px;
+            padding-top: 5px; /* Reduced top padding */
         }
 
         h1 {
-            color: #FFFF55; /* Yellow heading */
+            color: #FFFF55;
+            margin-top: 5px;
             margin-bottom: 5px;
-        }
-
-        #gameCanvas {
-            border: 1px solid #AAAAAA; /* Grey border */
-            background-color: #00AAAA; /* Cyan sky color */
-            margin-top: 10px;
+            font-size: 1.5em;
         }
 
         #gameInfo {
             display: flex;
             justify-content: space-around;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            flex-wrap: wrap;
             width: 800px;
-            max-width: 95%; /* Prevent overflow */
-            background-color: #555555; /* Dark grey info bar */
+            max-width: 95%;
+            background-color: #555555;
             color: #FFFFFF;
             padding: 5px;
             border: 1px solid #AAAAAA;
-            font-size: 0.9em; /* Slightly smaller text */
-            box-sizing: border-box; /* Include padding/border in width */
+            font-size: 0.9em;
+            box-sizing: border-box;
+            margin-bottom: 5px; /* Space below info */
         }
 
         #gameInfo p {
             margin: 2px 10px;
-            white-space: nowrap; /* Prevent wrapping within a single info item */
+            white-space: nowrap;
         }
+        /* Highlight current player's score/round */
+        #gameInfo p.active-player {
+             font-weight: bold;
+             color: #FFFF55; /* Yellow highlight */
+        }
+
+
+        #canvasContainer {
+            position: relative; /* Needed for absolute positioning of messages over canvas */
+            width: 800px;
+            height: 500px;
+             max-width: 95%;
+        }
+
+
+        #gameCanvas {
+            border: 1px solid #AAAAAA;
+            background-color: #00AAAA;
+            display: block; /* Remove extra space below canvas */
+            width: 100%;   /* Fill container */
+            height: 100%;  /* Fill container */
+        }
+
+         /* Message overlay for round win/game over */
+        #overlayMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #FFFF55;
+            padding: 20px 40px;
+            border: 2px solid #FFFFFF;
+            font-size: 1.8em;
+            text-align: center;
+            display: none; /* Hidden by default */
+            z-index: 10;
+            border-radius: 10px;
+        }
+
 
         #controls {
             margin-top: 10px;
             padding: 10px;
-            background-color: #AAAAAA; /* Lighter grey controls */
+            background-color: #AAAAAA;
             border: 1px solid #FFFFFF;
-            border-radius: 0; /* Square corners */
-            color: #000000; /* Black text for controls */
+            border-radius: 0;
+            color: #000000;
             display: flex;
-            flex-wrap: wrap; /* Allow controls to wrap */
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 10px; /* Spacing between control elements */
+            gap: 10px;
             width: 800px;
              max-width: 95%;
              box-sizing: border-box;
         }
 
         #controls label {
-            margin: 0 5px 0 0; /* Adjust spacing */
+            margin: 0 5px 0 0;
         }
 
         #controls input {
@@ -78,10 +115,10 @@
         }
 
         #controls button {
-            margin-left: 5px; /* Adjust spacing */
+            margin-left: 5px;
             padding: 3px 8px;
             cursor: pointer;
-            background-color: #CCCCCC; /* Light grey button */
+            background-color: #CCCCCC;
             border: 1px outset #FFFFFF;
             color: #000000;
             font-family: Consolas, "Courier New", monospace;
@@ -91,7 +128,6 @@
             border-style: inset;
         }
 
-        /* Style disabled inputs/buttons */
         #controls input:disabled, #controls button:disabled {
             background-color: #e0e0e0;
             color: #777777;
@@ -105,13 +141,16 @@
     <h1>HTML Gorillas</h1>
 
     <div id="gameInfo">
-        <p>Player <span id="currentPlayer">1</span>'s Turn</p>
-        <p>Score: Player 1: <span id="score1">0</span> | Player 2 (AI): <span id="score2">0</span></p>
+        <p id="player1Info">P1 (Rounds: <span id="rounds1">0</span>)</p>
+        <p id="player2Info">P2 AI (Rounds: <span id="rounds2">0</span>)</p>
         <p>Wind: <span id="windInfo">0</span></p>
         <p id="messageInfo"></p>
     </div>
 
-    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <div id="canvasContainer">
+        <canvas id="gameCanvas" width="800" height="500"></canvas>
+        <div id="overlayMessage"></div> </div>
+
 
     <div id="controls">
         <label for="angleInput">Angle (0-180):</label>
@@ -122,20 +161,22 @@
     </div>
 
     <script>
+        // --- DOM References ---
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-
-        // Game Elements References
-        const currentPlayerSpan = document.getElementById('currentPlayer');
-        const score1Span = document.getElementById('score1');
-        const score2Span = document.getElementById('score2');
+        const player1InfoSpan = document.getElementById('player1Info');
+        const player2InfoSpan = document.getElementById('player2Info');
+        const rounds1Span = document.getElementById('rounds1');
+        const rounds2Span = document.getElementById('rounds2');
         const windInfoSpan = document.getElementById('windInfo');
         const messageInfo = document.getElementById('messageInfo');
         const angleInput = document.getElementById('angleInput');
         const velocityInput = document.getElementById('velocityInput');
         const fireButton = document.getElementById('fireButton');
+        const overlayMessageDiv = document.getElementById('overlayMessage');
 
-        // Game Constants
+
+        // --- Game Constants ---
         const GRAVITY = 0.08;
         const GORILLA_WIDTH = 25;
         const GORILLA_HEIGHT = 25;
@@ -148,6 +189,7 @@
         const BUILDING_WIDTH_MIN = 40;
         const BUILDING_WIDTH_MAX = 70;
         const SUN_RADIUS = 20;
+        const ROUNDS_TO_WIN = 2; // Best 2 out of 3
 
         // Building Colors
         const BUILDING_COLORS = [
@@ -155,7 +197,7 @@
             "#AA0000", "#00AA00", "#0000AA", "#AAAA00", "#AA00AA", "#00AAAA"
         ];
 
-        // Game State
+        // --- Game State ---
         let buildings = [];
         let gorillas = [
             { x: 0, y: 0, color: '#C0C0C0', hit: false }, // Silver gorilla 1
@@ -165,11 +207,89 @@
         let explosion = { x: 0, y: 0, size: 0, active: false, timer: 0 };
         let sun = { x: canvas.width - SUN_RADIUS - 30, y: SUN_RADIUS + 20, mood: 'normal' };
         let currentPlayer = 1;
-        let scores = { player1: 0, player2: 0 };
+        let roundScores = { player1: 0, player2: 0 }; // Rounds won
         let wind = 0;
-        let gameInProgress = true;
+        let gameActive = true; // Is the overall match active?
+        let roundActive = true; // Is the current round active?
         let animationFrameId = null;
-        let isPlayer2AI = true; // AI is enabled for Player 2
+        let isPlayer2AI = true;
+        let toneStarted = false; // Flag to ensure Tone.js starts on user interaction
+
+        // --- Sound Effects (Tone.js) ---
+        let synth, noiseSynth, hitSynth, winSynth;
+
+        function setupSounds() {
+            // Use basic synths for broad compatibility
+            synth = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.2 } }).toDestination();
+            noiseSynth = new Tone.NoiseSynth({ noise: { type: "white" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
+            hitSynth = new Tone.Synth({ oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 } }).toDestination();
+            winSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.05, decay: 0.2, sustain: 0.3, release: 0.5 } }).toDestination();
+             console.log("Tone.js synths initialized.");
+        }
+
+        function playSound(type, options = {}) {
+            if (!toneStarted) {
+                console.warn("Tone.js not started. Sound suppressed.");
+                return;
+            }
+            // Ensure synths are created (might fail on very fast init)
+            if (!synth) setupSounds();
+            if (!synth) { // If still fails, log error
+                 console.error("Synths not ready for sound:", type);
+                 return;
+            }
+
+
+            try {
+                const now = Tone.now();
+                switch(type) {
+                    case 'throw':
+                        synth.triggerAttackRelease("C3", "16n", now);
+                        synth.setNote("G3", now + Tone.Time("16n").toSeconds()); // Quick pitch up
+                        break;
+                    case 'explosion':
+                        noiseSynth.triggerAttackRelease("8n", now); // Short noise burst
+                        synth.triggerAttackRelease("G2", "8n", now); // Low tone
+                        break;
+                    case 'hit':
+                        hitSynth.triggerAttackRelease("A5", "8n", now); // Sharp hit sound
+                        break;
+                     case 'winRound':
+                        winSynth.triggerAttackRelease("C5", "8n", now);
+                        winSynth.triggerAttackRelease("E5", "8n", now + 0.2);
+                        winSynth.triggerAttackRelease("G5", "4n", now + 0.4);
+                        break;
+                    case 'winGame':
+                         winSynth.triggerAttackRelease("C4", "8n", now);
+                         winSynth.triggerAttackRelease("E4", "8n", now + 0.15);
+                         winSynth.triggerAttackRelease("G4", "8n", now + 0.3);
+                         winSynth.triggerAttackRelease("C5", "4n", now + 0.45);
+                         winSynth.triggerAttackRelease("G5", "2n", now + 0.7); // Longer final note
+                        break;
+                    case 'fall':
+                         noiseSynth.volume.value = -6; // Quieter noise
+                         noiseSynth.triggerAttackRelease("4n", now);
+                         synth.triggerAttackRelease("A2", "4n", now); // Descending pitch simulation
+                         synth.setNote("E2", now + Tone.Time("8n").toSeconds());
+                          synth.setNote("C2", now + Tone.Time("4n").toSeconds());
+                         noiseSynth.volume.value = 0; // Reset volume
+                         break;
+                }
+            } catch (error) {
+                 console.error("Error playing sound:", type, error);
+            }
+        }
+
+         // Function to start Tone.js on first user interaction
+        async function startTone() {
+            if (!toneStarted) {
+                await Tone.start();
+                toneStarted = true;
+                console.log("Tone.js started successfully.");
+                setupSounds(); // Setup synths after Tone starts
+            }
+        }
+
 
         // --- Initialization ---
 
@@ -188,7 +308,8 @@
                     width: buildingWidth,
                     height: buildingHeight,
                     originalHeight: buildingHeight,
-                    color: buildingColor
+                    color: buildingColor,
+                    damage: [] // Array to store explosion crater data {x, y, radius}
                 });
                 currentX += buildingWidth;
             }
@@ -208,11 +329,16 @@
 
                 gorillas[1].x = buildings[buildingIndex2].x + buildings[buildingIndex2].width / 2 - GORILLA_WIDTH / 2;
                 gorillas[1].y = buildings[buildingIndex2].y - GORILLA_HEIGHT;
-            } else {
-                gorillas[0].x = buildings[0].x + buildings[0].width / 2 - GORILLA_WIDTH / 2;
-                gorillas[0].y = buildings[0].y - GORILLA_HEIGHT;
-                gorillas[1].x = buildings[buildings.length-1].x + buildings[buildings.length-1].width / 2 - GORILLA_WIDTH / 2;
-                gorillas[1].y = buildings[buildings.length-1].y - GORILLA_HEIGHT;
+            } else { // Fallback
+                 if (buildings.length > 0) {
+                    gorillas[0].x = buildings[0].x + buildings[0].width / 2 - GORILLA_WIDTH / 2;
+                    gorillas[0].y = buildings[0].y - GORILLA_HEIGHT;
+                    gorillas[1].x = buildings[buildings.length-1].x + buildings[buildings.length-1].width / 2 - GORILLA_WIDTH / 2;
+                    gorillas[1].y = buildings[buildings.length-1].y - GORILLA_HEIGHT;
+                 } else { // No buildings fallback (shouldn't happen)
+                     gorillas[0].x = 50; gorillas[0].y = canvas.height - 50;
+                     gorillas[1].x = canvas.width - 80; gorillas[1].y = canvas.height - 50;
+                 }
             }
             gorillas[0].y = Math.max(0, gorillas[0].y);
             gorillas[1].y = Math.max(0, gorillas[1].y);
@@ -224,37 +350,40 @@
         }
 
         function initGame() {
-            scores = { player1: 0, player2: 0 };
-            currentPlayer = 1; // Player 1 always starts
+            roundScores = { player1: 0, player2: 0 }; // Reset round wins
+            gameActive = true;
+            currentPlayer = 1; // Player 1 starts first round
             resetRound();
         }
 
         function resetRound() {
-            gameInProgress = true;
+            roundActive = true;
             banana.active = false;
             explosion.active = false;
             sun.mood = 'normal';
             gorillas.forEach(g => g.hit = false);
+            overlayMessageDiv.style.display = 'none'; // Hide overlay
+
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
                 animationFrameId = null;
             }
 
-            generateCityscape();
+            generateCityscape(); // Regenerate buildings with empty damage arrays
             placeGorillas();
             setWind();
-            updateUI();
+            updateUI(); // Update scores and highlights
             draw();
 
-             // Reset turn logic based on who starts
+            // Set message and controls based on current player
             if (currentPlayer === 1) {
                  setMessage(`Player 1: Enter angle and velocity.`);
                  enableControls(true);
             } else if (isPlayer2AI) {
                  setMessage("AI is thinking...");
                  enableControls(false);
-                 setTimeout(runAIturn, 1500); // Give AI time on reset too
-            } else {
+                 setTimeout(runAIturn, 1500);
+            } else { // Human Player 2 (if AI is disabled)
                  setMessage(`Player 2: Enter angle and velocity.`);
                  enableControls(true);
             }
@@ -266,27 +395,51 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawSun();
 
+            // Draw buildings with damage craters
             buildings.forEach(b => {
+                ctx.save(); // Save context state before clipping
+
+                // Create path for the building rectangle
+                ctx.beginPath();
+                ctx.rect(b.x, b.y, b.width, canvas.height - b.y);
+
+                // Subtract damage craters using counter-clockwise arcs
+                b.damage.forEach(crater => {
+                    ctx.moveTo(crater.x + crater.radius, crater.y); // Move to start of arc
+                    ctx.arc(crater.x, crater.y, crater.radius, 0, Math.PI * 2, true); // Counter-clockwise arc
+                });
+                ctx.closePath(); // Close the path
+
+                // Clip subsequent drawing to this path
+                ctx.clip();
+
+                // Fill the clipped area with building color
                 ctx.fillStyle = b.color;
-                ctx.fillRect(b.x, b.y, b.width, canvas.height - b.y);
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-                for (let wy = b.y + 10; wy < canvas.height - 10; wy += 20) {
-                    for (let wx = b.x + 5; wx < b.x + b.width - 5; wx += 15) {
-                         if (wy < canvas.height - b.height + b.originalHeight)
-                             ctx.fillRect(wx, wy, 5, 8);
-                    }
-                }
+                ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill entire canvas, clipped area shows
+
+                // Draw windows (also clipped)
+                 ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                 for (let wy = b.y + 10; wy < canvas.height - 10; wy += 20) {
+                     for (let wx = b.x + 5; wx < b.x + b.width - 5; wx += 15) {
+                          ctx.fillRect(wx, wy, 5, 8);
+                     }
+                 }
+
+                ctx.restore(); // Restore context state (remove clipping path)
+
+                 // Optional: Draw border around original building shape? Or leave as is.
+                 // ctx.strokeStyle = "#333";
+                 // ctx.strokeRect(b.x, b.y, b.width, canvas.height - b.y);
             });
 
+
+            // Draw gorillas (same as before)
             gorillas.forEach((g, index) => {
                 if (g.hit) {
-                    ctx.strokeStyle = 'red';
-                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = 'red'; ctx.lineWidth = 3;
                     ctx.beginPath();
-                    ctx.moveTo(g.x, g.y);
-                    ctx.lineTo(g.x + GORILLA_WIDTH, g.y + GORILLA_HEIGHT);
-                    ctx.moveTo(g.x + GORILLA_WIDTH, g.y);
-                    ctx.lineTo(g.x, g.y + GORILLA_HEIGHT);
+                    ctx.moveTo(g.x, g.y); ctx.lineTo(g.x + GORILLA_WIDTH, g.y + GORILLA_HEIGHT);
+                    ctx.moveTo(g.x + GORILLA_WIDTH, g.y); ctx.lineTo(g.x, g.y + GORILLA_HEIGHT);
                     ctx.stroke();
                 } else {
                     ctx.fillStyle = g.color;
@@ -296,88 +449,74 @@
                 }
             });
 
+            // Draw banana (same as before)
             if (banana.active) {
-                ctx.fillStyle = 'yellow';
-                ctx.beginPath();
+                ctx.fillStyle = 'yellow'; ctx.beginPath();
                 ctx.moveTo(banana.x - BANANA_WIDTH / 2, banana.y);
                 ctx.quadraticCurveTo(banana.x, banana.y - BANANA_HEIGHT, banana.x + BANANA_WIDTH / 2, banana.y);
                 ctx.quadraticCurveTo(banana.x, banana.y + BANANA_HEIGHT / 2, banana.x - BANANA_WIDTH / 2, banana.y);
                 ctx.fill();
             }
 
+            // Draw explosion (same as before)
             if (explosion.active) {
                 const baseSize = explosion.size * 0.5;
                 const flickerSize = baseSize + Math.random() * baseSize;
-                ctx.fillStyle = 'red';
-                ctx.fillRect(explosion.x - flickerSize / 2, explosion.y - flickerSize / 2, flickerSize, flickerSize);
-                ctx.fillStyle = 'orange';
-                const outerFlicker = explosion.size + Math.random() * explosion.size * 0.5;
+                ctx.fillStyle = 'red'; ctx.fillRect(explosion.x - flickerSize / 2, explosion.y - flickerSize / 2, flickerSize, flickerSize);
+                ctx.fillStyle = 'orange'; const outerFlicker = explosion.size + Math.random() * explosion.size * 0.5;
                 ctx.fillRect(explosion.x - outerFlicker / 2, explosion.y - outerFlicker / 2, outerFlicker, outerFlicker);
-                 ctx.fillStyle = 'yellow';
-                 const innerFlicker = baseSize * 0.6 + Math.random() * baseSize * 0.4;
+                 ctx.fillStyle = 'yellow'; const innerFlicker = baseSize * 0.6 + Math.random() * baseSize * 0.4;
                  ctx.fillRect(explosion.x - innerFlicker / 2, explosion.y - innerFlicker / 2, innerFlicker, innerFlicker);
             }
         }
 
-        function drawSun() {
-            ctx.fillStyle = 'yellow';
-            ctx.beginPath();
-            ctx.arc(sun.x, sun.y, SUN_RADIUS, 0, Math.PI * 2);
+        function drawSun() { // (Same as before)
+            ctx.fillStyle = 'yellow'; ctx.beginPath(); ctx.arc(sun.x, sun.y, SUN_RADIUS, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'black'; ctx.beginPath();
+            ctx.arc(sun.x - SUN_RADIUS * 0.3, sun.y - SUN_RADIUS * 0.2, 3, 0, Math.PI * 2); // Left eye
+            ctx.arc(sun.x + SUN_RADIUS * 0.3, sun.y - SUN_RADIUS * 0.2, 3, 0, Math.PI * 2); // Right eye
             ctx.fill();
-            ctx.fillStyle = 'black';
-            ctx.beginPath();
-            ctx.arc(sun.x - SUN_RADIUS * 0.3, sun.y - SUN_RADIUS * 0.2, 3, 0, Math.PI * 2);
-            ctx.arc(sun.x + SUN_RADIUS * 0.3, sun.y - SUN_RADIUS * 0.2, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'black';
-            if (sun.mood === 'happy') {
-                ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.1, SUN_RADIUS * 0.5, 0.2 * Math.PI, 0.8 * Math.PI);
-            } else if (sun.mood === 'sad') {
-                ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.6, SUN_RADIUS * 0.5, 1.2 * Math.PI, 1.8 * Math.PI);
-            } else {
-                ctx.moveTo(sun.x - SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4);
-                ctx.lineTo(sun.x + SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4);
-            }
+            ctx.beginPath(); ctx.lineWidth = 2; ctx.strokeStyle = 'black';
+            if (sun.mood === 'happy') { ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.1, SUN_RADIUS * 0.5, 0.2 * Math.PI, 0.8 * Math.PI); }
+            else if (sun.mood === 'sad') { ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.6, SUN_RADIUS * 0.5, 1.2 * Math.PI, 1.8 * Math.PI); }
+            else { ctx.moveTo(sun.x - SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4); ctx.lineTo(sun.x + SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4); }
             ctx.stroke();
         }
 
         // --- Game Logic ---
 
         function fireBanana() {
-             if (!gameInProgress || banana.active) return;
+             if (!gameActive || !roundActive || banana.active) return;
 
-            // Read values only if it's human player (AI sets them directly)
-            let angleDeg, velocity;
-            if (currentPlayer === 1 || !isPlayer2AI) {
-                angleDeg = parseFloat(angleInput.value);
-                velocity = parseFloat(velocityInput.value);
-            } else { // AI's turn, values already set in input fields by AI logic
+             startTone(); // Ensure Tone.js is started by user interaction
+
+             let angleDeg, velocity;
+             // Read values only if it's human player
+             if (currentPlayer === 1 || !isPlayer2AI) {
                  angleDeg = parseFloat(angleInput.value);
                  velocity = parseFloat(velocityInput.value);
-            }
 
-
-            if (isNaN(angleDeg) || isNaN(velocity) || velocity <= 0 || angleDeg < 0 || angleDeg > 180) {
-                setMessage("Invalid input. Angle 0-180, Velocity > 0.");
-                 // Re-enable controls only if it was a human error
-                 if (currentPlayer === 1 || !isPlayer2AI) {
-                    enableControls(true);
+                 if (isNaN(angleDeg) || isNaN(velocity) || velocity <= 0 || angleDeg < 0 || angleDeg > 180) {
+                     setMessage("Invalid input. Angle 0-180, Velocity > 0.");
+                     enableControls(true); // Re-enable for correction
+                     return;
                  }
-                return;
-            }
+             } else { // AI's turn, values already set
+                  angleDeg = parseFloat(angleInput.value);
+                  velocity = parseFloat(velocityInput.value);
+             }
 
-            enableControls(false); // Disable controls during flight
+            enableControls(false);
             setMessage("");
             sun.mood = 'normal';
+            playSound('throw');
 
             let angleRad;
             if (currentPlayer === 1) {
                 angleRad = (180 - angleDeg) * Math.PI / 180;
                 banana.x = gorillas[0].x + GORILLA_WIDTH;
                 banana.y = gorillas[0].y + GORILLA_HEIGHT / 2;
-            } else { // Player 2 (AI or Human)
+            } else {
                 angleRad = angleDeg * Math.PI / 180;
                 banana.x = gorillas[1].x;
                 banana.y = gorillas[1].y + GORILLA_HEIGHT / 2;
@@ -392,51 +531,63 @@
         }
 
         function gameLoop() {
-            if (!banana.active && !explosion.active) {
-                animationFrameId = null;
-                if (!gameInProgress) {
-                     // Determine winner based on scores or last hit state
-                     let winner = -1; // -1 = ongoing, 0 = P1, 1 = P2
-                     if (gorillas[1].hit && !gorillas[0].hit) winner = 0; // P2 hit, P1 wins
-                     else if (gorillas[0].hit && !gorillas[1].hit) winner = 1; // P1 hit, P2 wins
-                     // Could add score limit check here too
-                     if (winner !== -1) {
-                        setMessage(`GAME OVER! Player ${winner + 1} wins! Score: ${scores.player1}-${scores.player2}`);
-                     } else {
-                         setMessage(`GAME OVER! Score: ${scores.player1}-${scores.player2}. Refresh to play again.`); // Generic end
-                     }
-                     enableControls(false); // Keep controls disabled
-                } else {
-                     // Game continues, switch player if needed (handled after explosion)
-                }
-                return;
-            }
+            // Main loop continues as long as something is animating OR the game/round is active
+            if (!gameActive) return; // Stop if match is over
 
+            if (!banana.active && !explosion.active && !roundActive) {
+                 // Round ended, but game might continue. Handled by endRound logic.
+                 animationFrameId = null;
+                 return;
+            }
+             if (!banana.active && !explosion.active && roundActive) {
+                 // Nothing happening, waiting for input
+                 animationFrameId = null;
+                 // Ensure controls are enabled for the correct player
+                 enableControls(true);
+                 return;
+             }
+
+
+            // --- Banana Physics and Collision ---
             if (banana.active) {
                 banana.vx += wind;
                 banana.vy += GRAVITY;
                 banana.x += banana.vx;
                 banana.y += banana.vy;
 
-                let hitTarget = null;
+                let hitTarget = null; // null, 'building', 'gorilla1', 'gorilla2', 'offscreen'
                 let hitObject = null;
 
-                if (banana.x < -BANANA_WIDTH * 2 || banana.x > canvas.width + BANANA_WIDTH * 2 || banana.y > canvas.height + BANANA_HEIGHT * 2) {
+                // Off screen check
+                if (banana.x < -BANANA_WIDTH * 3 || banana.x > canvas.width + BANANA_WIDTH * 3 || banana.y > canvas.height + BANANA_HEIGHT * 3) {
                     hitTarget = 'offscreen';
                 }
 
+                // Building collision
                 if (!hitTarget) {
                     for (const building of buildings) {
+                        // Check if banana center is within building bounds (horizontally and vertically below top)
                         if (banana.x >= building.x && banana.x <= building.x + building.width &&
-                            banana.y >= building.y &&
-                            banana.y <= canvas.height) {
-                            hitTarget = 'building';
-                            hitObject = building;
-                            break;
+                            banana.y >= building.y && banana.y <= canvas.height)
+                        {
+                             // More precise check: is banana center *not* inside an existing crater?
+                             let inCrater = false;
+                             for(const crater of building.damage) {
+                                 if (distSq(banana.x, banana.y, crater.x, crater.y) < crater.radius * crater.radius) {
+                                     inCrater = true;
+                                     break;
+                                 }
+                             }
+                             if (!inCrater) {
+                                hitTarget = 'building';
+                                hitObject = building;
+                                break;
+                             }
                         }
                     }
                 }
 
+                // Gorilla collision
                 if (!hitTarget) {
                     gorillas.forEach((g, index) => {
                         if (!g.hit &&
@@ -448,90 +599,74 @@
                     });
                 }
 
+                // --- Handle Hit ---
                 if (hitTarget) {
                     const impactX = banana.x;
                     const impactY = banana.y;
                     banana.active = false;
-                    startExplosion(impactX, impactY);
+                    startExplosion(impactX, impactY); // Start explosion visual/sound
 
-                    if (hitTarget === 'building') {
+                    if (hitTarget === 'building' && hitObject) {
                         setMessage("Hit a building!");
-                        damageBuilding(impactX, impactY, EXPLOSION_RADIUS);
+                        damageBuilding(hitObject, impactX, impactY, EXPLOSION_RADIUS); // Apply damage logic
                         sun.mood = 'normal';
                     } else if (hitTarget.startsWith('gorilla')) {
                         const hitPlayerIndex = parseInt(hitTarget.slice(-1)) - 1;
                         gorillas[hitPlayerIndex].hit = true;
-                        const scoringPlayer = hitPlayerIndex === 0 ? 2 : 1; // Player who scored the hit
-
-                        setMessage(`Player ${scoringPlayer} HITS!`);
-                        scores[`player${scoringPlayer}`]++;
-                        updateUI();
-                        sun.mood = scoringPlayer === currentPlayer ? 'happy' : 'sad'; // Happy if current player scored, sad if opponent hit current player (shouldn't happen with self-hit check?)
-
-                        // Check for self-hit explicitly
-                        if (hitPlayerIndex + 1 === currentPlayer) {
-                             setMessage(`Player ${currentPlayer} hit themselves! Ouch!`);
-                             sun.mood = 'sad';
-                             // Optional: Opponent scores on self-hit?
-                             // scores[`player${currentPlayer === 1 ? 2 : 1}`]++;
-                             // updateUI();
-                        }
-
-                        gameInProgress = false; // End game on any gorilla hit
-
+                        playSound('hit');
+                        endRound(currentPlayer); // Current player wins the round
                     } else { // Offscreen
                         setMessage("Missed!");
                         sun.mood = 'normal';
+                        // Don't end round on miss, just wait for explosion to finish
                     }
                 }
-            }
+            } // End banana active check
 
+            // --- Update Explosion ---
             if (explosion.active) {
                 explosion.size += 2;
                 explosion.timer--;
                 if (explosion.timer <= 0) {
                     explosion.active = false;
-                    checkGorillaSupport(); // Check support AFTER explosion visual finishes
-
-                    // If game is still marked as in progress (no hit registered), switch turn
-                    if (gameInProgress) {
-                        switchPlayer();
-                    } else {
-                        // Game ended, stop animation implicitly by not calling requestAnimationFrame again
-                        // Final game over message will be shown when loop terminates
+                    // Check support AFTER explosion visual finishes and ONLY if round is still active
+                    if (roundActive) {
+                        checkGorillaSupport();
+                    }
+                    // If round ended during explosion (e.g., by gorilla hit), the endRound logic handles the next step.
+                    // If round didn't end, switch player.
+                    if (roundActive) {
+                         switchPlayer();
                     }
                 }
-            }
+            } // End explosion active check
 
-            draw();
-            if (banana.active || explosion.active) {
+            draw(); // Redraw the scene
+
+            // Continue loop if something is active or round is ongoing
+            if (gameActive && (banana.active || explosion.active || roundActive)) {
                  animationFrameId = requestAnimationFrame(gameLoop);
-            } else if (!gameInProgress) {
-                 // Game ended, ensure final message is shown after drawing stops
-                 gameLoop(); // Call one last time to trigger end message logic
+            } else if (!gameActive) {
+                 // Game over, final message handled elsewhere
             }
-        }
 
-        function damageBuilding(x, y, radius) {
-            buildings.forEach(building => {
-                const overlapX = Math.max(0, Math.min(x + radius, building.x + building.width) - Math.max(x - radius, building.x));
-                if (overlapX > 0) {
-                    if (building.y < y + radius && building.y > y - radius * 0.5) { // Hit near top
-                        const damageDepth = Math.max(0, (y + radius) - building.y);
-                        const newY = Math.min(canvas.height - 10, building.y + damageDepth); // Don't completely obliterate, leave a stub
-                        const newHeight = canvas.height - newY;
+        } // End gameLoop
 
-                        if (newHeight < building.height - 5) {
-                            building.y = Math.round(newY / 10) * 10; // Align to grid
-                            building.height = canvas.height - building.y;
-                        }
-                    }
-                }
-            });
+        function damageBuilding(building, x, y, radius) {
+             // Add crater data to the building object
+             // Ensure crater is somewhat within building bounds for relevance
+            if (x > building.x - radius && x < building.x + building.width + radius &&
+                y > building.y - radius && y < canvas.height + radius) {
+                 building.damage.push({ x: x, y: y, radius: radius });
+                 // Optional: Check if damage destroys gorilla support immediately
+                 // checkGorillaSupport(); // Could cause issues if called mid-explosion? Better after.
+            }
         }
 
         function checkGorillaSupport() {
-            let gameOverTriggeredByFall = false;
+             if (!roundActive) return; // Don't check if round already ended
+
+            let roundEndedByFall = false;
             gorillas.forEach((g, index) => {
                 if (g.hit) return;
 
@@ -540,51 +675,96 @@
                 const gorillaBottomY = g.y + GORILLA_HEIGHT;
 
                 for (const building of buildings) {
-                    if (gorillaCenterX >= building.x && gorillaCenterX <= building.x + building.width &&
-                        gorillaBottomY >= building.y && gorillaBottomY < building.y + 10)
-                    {
-                        supported = true;
-                         g.y = building.y - GORILLA_HEIGHT; // Correct position on support
-                        break;
+                    if (gorillaCenterX >= building.x && gorillaCenterX <= building.x + building.width) {
+                         // Check if bottom is above the effective top surface (considering craters)
+                         let effectiveTopY = building.y; // Start with original top
+
+                         // Is the gorilla standing over a crater?
+                         let overCrater = false;
+                         for (const crater of building.damage) {
+                             // If gorilla center X is within crater horizontal span
+                             if (gorillaCenterX > crater.x - crater.radius && gorillaCenterX < crater.x + crater.radius) {
+                                // Calculate crater edge Y at gorilla's X
+                                const dx = gorillaCenterX - crater.x;
+                                const craterEdgeY = crater.y + Math.sqrt(Math.max(0, crater.radius * crater.radius - dx * dx));
+                                effectiveTopY = Math.max(effectiveTopY, craterEdgeY); // Highest point below gorilla matters
+                                if (gorillaBottomY >= effectiveTopY - 5) { // If feet are at/below crater edge
+                                     overCrater = true;
+                                }
+                             }
+                         }
+
+
+                         // Check if gorilla's bottom is on or slightly above the effective top
+                         if (gorillaBottomY >= effectiveTopY - 5 && gorillaBottomY < effectiveTopY + 10) {
+                            supported = true;
+                            // Adjust gorilla Y to sit precisely on the support surface
+                            g.y = effectiveTopY - GORILLA_HEIGHT;
+                            break; // Found support on this building
+                         }
                     }
                 }
 
-                if (!supported) {
-                     if (!gameOverTriggeredByFall) { // Only process first fall per check
-                         setMessage(`Gorilla ${index + 1} fell!`);
-                         g.hit = true;
-                         const opponentIndex = index === 0 ? 1 : 0;
-                         if (!gorillas[opponentIndex].hit) {
-                             scores[`player${opponentIndex + 1}`]++;
-                             updateUI();
-                             sun.mood = 'happy'; // Opponent is happy
-                             gameInProgress = false; // End game
-                             gameOverTriggeredByFall = true; // Prevent cascade messages/scores in one frame
-                         } else {
-                              // Both hit/fell simultaneously or opponent already hit - game already over
-                              gameInProgress = false;
-                              gameOverTriggeredByFall = true;
-                         }
-                     }
+                if (!supported && !roundEndedByFall) {
+                    setMessage(`Gorilla ${index + 1} fell!`);
+                    playSound('fall');
+                    g.hit = true;
+                    const opponentIndex = index === 0 ? 1 : 0;
+                    endRound(opponentIndex + 1); // Opponent wins the round
+                    roundEndedByFall = true; // Prevent multiple fall triggers per frame
                 }
             });
         }
 
-
         function startExplosion(x, y) {
-            explosion.x = x;
-            explosion.y = y;
-            explosion.size = 5;
-            explosion.active = true;
+            explosion.x = x; explosion.y = y;
+            explosion.size = 5; explosion.active = true;
             explosion.timer = EXPLOSION_DURATION;
+            playSound('explosion');
         }
 
+        // --- Round and Game End Logic ---
+        function endRound(winnerPlayerNum) {
+             if (!roundActive) return; // Prevent multiple calls
+
+             roundActive = false; // Mark round as ended
+             cancelAnimationFrame(animationFrameId); // Stop animation loop if running
+             animationFrameId = null;
+
+             roundScores[`player${winnerPlayerNum}`]++;
+             updateUI(); // Update round score display
+
+             // Check for game win
+             if (roundScores[`player${winnerPlayerNum}`] >= ROUNDS_TO_WIN) {
+                 gameActive = false; // Match over
+                 showOverlayMessage(`Player ${winnerPlayerNum} Wins the Match! (${roundScores.player1}-${roundScores.player2})`, true);
+                 playSound('winGame');
+                 enableControls(false); // Disable controls permanently
+             } else {
+                 // Round over, but match continues
+                 showOverlayMessage(`Player ${winnerPlayerNum} Wins Round! (${roundScores.player1}-${roundScores.player2})`, false);
+                 playSound('winRound');
+                 // Set current player for the *next* round (loser starts? or alternate?)
+                 // Let's alternate:
+                 currentPlayer = currentPlayer === 1 ? 2 : 1;
+                 // Start next round after a delay
+                 setTimeout(resetRound, 3000); // 3 second delay
+             }
+        }
+
+        function showOverlayMessage(message, isGameOver) {
+             overlayMessageDiv.textContent = message;
+             overlayMessageDiv.style.display = 'block';
+             // No automatic hiding if game over, requires refresh
+        }
+
+
         function switchPlayer() {
-            // Only switch if the game is actually still running
-            if (!gameInProgress) return;
+            // Only switch if round is active and no animations are playing
+            if (!roundActive || banana.active || explosion.active) return;
 
             currentPlayer = currentPlayer === 1 ? 2 : 1;
-            updateUI();
+            updateUI(); // Update player highlight
 
             if (currentPlayer === 2 && isPlayer2AI) {
                 enableControls(false);
@@ -599,10 +779,13 @@
         // --- UI Updates ---
 
         function updateUI() {
-            currentPlayerSpan.textContent = currentPlayer;
-            score1Span.textContent = scores.player1;
-            score2Span.textContent = scores.player2;
+            rounds1Span.textContent = roundScores.player1;
+            rounds2Span.textContent = roundScores.player2;
             windInfoSpan.textContent = (wind * 50).toFixed(0);
+
+            // Highlight active player info
+             player1InfoSpan.classList.toggle('active-player', currentPlayer === 1 && roundActive && gameActive);
+             player2InfoSpan.classList.toggle('active-player', currentPlayer === 2 && roundActive && gameActive);
         }
 
         function setMessage(msg) {
@@ -610,9 +793,9 @@
         }
 
         function enableControls(enabled) {
+             // Enable only if game & round active, it's human turn, and no animations
             const humanTurn = (currentPlayer === 1 || !isPlayer2AI);
-            // Enable only if it's a human turn, game is progress, and nothing is flying/exploding
-            const controlsShouldBeEnabled = enabled && humanTurn && gameInProgress && !banana.active && !explosion.active;
+            const controlsShouldBeEnabled = enabled && gameActive && roundActive && humanTurn && !banana.active && !explosion.active;
 
             angleInput.disabled = !controlsShouldBeEnabled;
             velocityInput.disabled = !controlsShouldBeEnabled;
@@ -620,153 +803,98 @@
         }
 
 
-        // --- AI Logic ---
+        // --- AI Logic (Mostly Unchanged) ---
 
-        function distSq(x1, y1, x2, y2) {
-            const dx = x1 - x2;
-            const dy = y1 - y2;
-            return dx * dx + dy * dy;
+        function distSq(x1, y1, x2, y2) { /* ... same ... */
+            const dx = x1 - x2; const dy = y1 - y2; return dx * dx + dy * dy;
         }
 
-        function simulateThrow(startX, startY, angleDeg, velocity) {
-            const power = velocity / 6;
-            const angleRad = angleDeg * Math.PI / 180;
-
-            let simX = startX;
-            let simY = startY;
-            let simVx = Math.cos(angleRad) * power;
-            let simVy = -Math.sin(angleRad) * power;
-
+        function simulateThrow(startX, startY, angleDeg, velocity) { /* ... same ... */
+            const power = velocity / 6; const angleRad = angleDeg * Math.PI / 180;
+            let simX = startX; let simY = startY;
+            let simVx = Math.cos(angleRad) * power; let simVy = -Math.sin(angleRad) * power;
             const maxSteps = 500;
-
             for (let i = 0; i < maxSteps; i++) {
-                simVx += wind;
-                simVy += GRAVITY;
-                simX += simVx;
-                simY += simVy;
-
-                if (simX < -BANANA_WIDTH * 3 || simX > canvas.width + BANANA_WIDTH * 3 || simY > canvas.height + BANANA_HEIGHT * 3) {
-                     return { x: simX - simVx, y: simY - simVy }; // Return point before going way off
-                }
-
+                simVx += wind; simVy += GRAVITY; simX += simVx; simY += simVy;
+                if (simX < -BANANA_WIDTH * 3 || simX > canvas.width + BANANA_WIDTH * 3 || simY > canvas.height + BANANA_HEIGHT * 3) { return { x: simX - simVx, y: simY - simVy }; }
                 for (const building of buildings) {
-                    if (simX >= building.x && simX <= building.x + building.width && simY >= building.y) {
-                        return { x: simX, y: simY };
-                    }
+                    // Simplified check for simulation speed: ignore craters during simulation
+                    if (simX >= building.x && simX <= building.x + building.width && simY >= building.y) { return { x: simX, y: simY }; }
                 }
-
-                const target = gorillas[0]; // AI always simulates hitting P1
-                if (simX >= target.x && simX <= target.x + GORILLA_WIDTH &&
-                    simY >= target.y && simY <= target.y + GORILLA_HEIGHT) {
-                    return { x: simX, y: simY }; // Hit target zone
-                }
+                const target = gorillas[0];
+                if (simX >= target.x && simX <= target.x + GORILLA_WIDTH && simY >= target.y && simY <= target.y + GORILLA_HEIGHT) { return { x: simX, y: simY }; }
             }
-            return { x: simX, y: simY }; // Return last point if loop finishes
+            return { x: simX, y: simY };
         }
 
-        function runAIturn() {
-            if (!gameInProgress) return;
+         function runAIturn() { /* ... mostly same, uses requestAnimationFrame for chunking ... */
+             if (!gameActive || !roundActive) return;
+             setMessage("AI calculating...");
+             const target = gorillas[0]; const aiGorilla = gorillas[1];
+             const startX = aiGorilla.x; const startY = aiGorilla.y + GORILLA_HEIGHT / 2;
+             const targetX = target.x + GORILLA_WIDTH / 2; const targetY = target.y + GORILLA_HEIGHT / 2;
+             let bestShot = { angle: 90, velocity: 50, distance: Infinity };
+             const angleMin = 5; const angleMax = 175; const angleStep = 4;
+             const velocityMin = 15; const velocityMax = 95; const velocityStep = 4;
+             let currentAngle = angleMin;
 
-            setMessage("AI calculating...");
+             function simulateChunk() {
+                 if (!gameActive || !roundActive) return; // Stop if game/round ended
+                 const angleLimit = Math.min(angleMax, currentAngle + angleStep * 5);
+                 for (let angle = currentAngle; angle <= angleLimit; angle += angleStep) {
+                     for (let velocity = velocityMin; velocity <= velocityMax; velocity += velocityStep) {
+                         const landingPos = simulateThrow(startX, startY, angle, velocity);
+                         if (landingPos) {
+                             const distance = distSq(landingPos.x, landingPos.y, targetX, targetY);
+                             if (distance < bestShot.distance) {
+                                 bestShot.distance = distance; bestShot.angle = angle; bestShot.velocity = velocity;
+                             }
+                         }
+                     }
+                 }
+                 currentAngle = angleLimit + angleStep;
+                 if (currentAngle <= angleMax) {
+                     requestAnimationFrame(simulateChunk);
+                 } else {
+                     finalizeAIThrow(bestShot);
+                 }
+             }
+             simulateChunk(); // Start simulation
+         }
 
-            const target = gorillas[0];
-            const aiGorilla = gorillas[1];
-            const startX = aiGorilla.x;
-            const startY = aiGorilla.y + GORILLA_HEIGHT / 2;
-            const targetX = target.x + GORILLA_WIDTH / 2;
-            const targetY = target.y + GORILLA_HEIGHT / 2;
-
-            let bestShot = { angle: 90, velocity: 50, distance: Infinity }; // Default guess
-
-            const angleMin = 5;
-            const angleMax = 175;
-            const angleStep = 4; // Slightly finer steps
-            const velocityMin = 15;
-            const velocityMax = 95;
-            const velocityStep = 4;
-
-            // --- Asynchronous Simulation ---
-            // To prevent freezing the browser, run simulations in chunks
-            let currentAngle = angleMin;
-
-            function simulateChunk() {
-                if (!gameInProgress) return; // Stop if game ended during calculation
-
-                const angleLimit = Math.min(angleMax, currentAngle + angleStep * 5); // Process ~5 angles per chunk
-
-                for (let angle = currentAngle; angle <= angleLimit; angle += angleStep) {
-                    for (let velocity = velocityMin; velocity <= velocityMax; velocity += velocityStep) {
-                        const landingPos = simulateThrow(startX, startY, angle, velocity);
-                        if (landingPos) {
-                            const distance = distSq(landingPos.x, landingPos.y, targetX, targetY);
-                            if (distance < bestShot.distance) {
-                                bestShot.distance = distance;
-                                bestShot.angle = angle;
-                                bestShot.velocity = velocity;
-                            }
-                        }
-                    }
-                }
-
-                currentAngle = angleLimit + angleStep;
-
-                if (currentAngle <= angleMax) {
-                    // Still more angles to check, schedule next chunk
-                    requestAnimationFrame(simulateChunk); // Or setTimeout(simulateChunk, 0);
-                } else {
-                    // All angles checked, proceed to fire
-                    finalizeAIThrow(bestShot);
-                }
-            }
-            // Start the first chunk
-            simulateChunk();
-        }
-
-
-        function finalizeAIThrow(bestShot) {
-             if (!gameInProgress) return; // Check again
-
-             const accuracyFactor = Math.min(1, Math.sqrt(bestShot.distance) / 150); // Adjust divisor for difficulty
-             const angleError = (Math.random() - 0.5) * 8 * accuracyFactor; // +/- 4 deg error max
-             const velocityError = (Math.random() - 0.5) * 12 * accuracyFactor; // +/- 6 velocity error max
-
+         function finalizeAIThrow(bestShot) { /* ... same imperfection logic ... */
+             if (!gameActive || !roundActive) return;
+             const accuracyFactor = Math.min(1, Math.sqrt(bestShot.distance) / 150);
+             const angleError = (Math.random() - 0.5) * 8 * accuracyFactor;
+             const velocityError = (Math.random() - 0.5) * 12 * accuracyFactor;
              let finalAngle = bestShot.angle + angleError;
              let finalVelocity = bestShot.velocity + velocityError;
-
              finalAngle = Math.max(0, Math.min(180, finalAngle));
              finalVelocity = Math.max(1, Math.min(100, finalVelocity));
-
              setMessage(`AI fires! Angle: ${finalAngle.toFixed(1)}, Vel: ${finalVelocity.toFixed(1)}`);
-
              angleInput.value = finalAngle.toFixed(1);
              velocityInput.value = finalVelocity.toFixed(1);
-
              setTimeout(() => {
-                 if (gameInProgress) {
+                 if (gameActive && roundActive) { // Check again before firing
                      fireBanana();
                  }
-             }, 300); // Shorter delay after calculation finishes
-        }
+             }, 300);
+         }
 
 
         // --- Event Listeners ---
         fireButton.addEventListener('click', fireBanana);
-        // Optional: Allow Enter key in input fields to fire
-        angleInput.addEventListener('keypress', function (e) {
-             if (e.key === 'Enter' && !angleInput.disabled) {
-                 fireButton.click();
-             }
-         });
-         velocityInput.addEventListener('keypress', function (e) {
-             if (e.key === 'Enter' && !velocityInput.disabled) {
-                 fireButton.click();
-             }
-         });
+        // Add listener to start Tone.js on first click anywhere reliable
+        document.body.addEventListener('click', startTone, { once: true });
+        canvas.addEventListener('click', startTone, { once: true }); // Also on canvas click
+
+        // Enter key listeners (same as before)
+         angleInput.addEventListener('keypress', function (e) { if (e.key === 'Enter' && !angleInput.disabled) fireButton.click(); });
+         velocityInput.addEventListener('keypress', function (e) { if (e.key === 'Enter' && !velocityInput.disabled) fireButton.click(); });
 
 
         // --- Start Game ---
-        // Add a brief delay before starting to ensure fonts/layout settle
-        setTimeout(initGame, 100);
+        setTimeout(initGame, 100); // Brief delay before starting
 
     </script>
     </body>
