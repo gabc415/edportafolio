@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How the Gorillas Game AI Works</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        p {
+            margin-bottom: 1em;
+            color: #555;
+        }
+        pre {
+            background-color: #e0e0e0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9em;
+            color: #222;
+            border: 1px solid #ccc;
+        }
+        code {
+            font-family: monospace;
+        }
+        ul {
+            margin-bottom: 1em;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.5em;
+            color: #555;
+        }
+        strong {
+            color: #333;
+        }
+        .section {
+            margin-bottom: 2em;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 0.5em;
+            margin-bottom: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <h1>How the Gorillas Game AI Works</h1>
+        <p>The AI in this game employs a <strong>simulation and search method</strong>. Unlike learning-based AIs, this one operates purely on <strong>programmed rules</strong> to make its decisions.</p>
+    </div>
+
+    <div class="section">
+        <h2>1. Simulate Possible Shots:</h2>
+        <p>During the AI's turn (<code>runAIturn</code>), it methodically explores a range of <strong>angle and velocity combinations</strong>. To prevent browser lag, this process is broken down into smaller units (<code>simulateChunk</code>).</p>
+        <pre><code>
+// Inside simulateChunk loop structure:
+for (let angle = currentAngle; angle <= angleLimit; angle += angleStep) {
+    for (let velocity = velocityMin; velocity <= velocityMax; velocity += velocityStep) {
+        // Simulate this shot
+        const landingPos = simulateThrow(startX, startY, angle, velocity);
+        // Evaluate the result (see step 3)
+        // ...
+    }
+}
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>2. Calculate Path (<code>simulateThrow</code>):</h2>
+        <p>For each potential <strong>angle and velocity</strong>, the <code>simulateThrow</code> function calculates the <strong>banana's trajectory</strong> step-by-step, adhering to the game's <strong>physics rules</strong>. This prediction of the landing spot occurs without actually rendering the banana's flight.</p>
+        <pre><code>
+// Core physics update inside simulateThrow:
+simVx += wind;
+simVy += GRAVITY;
+simX += simVx;
+simY += simVy;
+// ... (collision checks follow) ...
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>3. Evaluate Landing Spot:</h2>
+        <p>The AI assesses each simulated shot by comparing its predicted landing position (<code>landingPos</code>) to the opponent's location. This comparison uses the <strong>squared distance</strong> (<code>distSq</code>) for computational efficiency.</p>
+        <pre><code>
+// Inside simulateChunk loop, after calling simulateThrow:
+if (landingPos) {
+    const distance = distSq(landingPos.x, landingPos.y, targetX, targetY);
+    // Keep track of the best shot found so far
+    if (distance < bestShot.distance) {
+        bestShot.distance = distance;
+        bestShot.angle = angle;
+        bestShot.velocity = velocity;
+    }
+}
+        </code></pre>
+    </div>
+
+    <div class="section">
+        <h2>4. Select Best & Add Imperfection (<code>finalizeAIThrow</code>):</h2>
+        <p>After considering all simulated shots, the AI chooses the <strong>angle and velocity</strong> (stored in <code>bestShot</code>) that resulted in the closest landing to the target. To introduce a degree of realism and avoid perfect accuracy, a small <strong>random error</strong> is added before the final shot.</p>
+        <pre><code>
+// Inside finalizeAIThrow:
+const accuracyFactor = Math.min(1, Math.sqrt(bestShot.distance) / 150);
+const angleError = (Math.random() - 0.5) * 8 * accuracyFactor; // Random angle adjustment
+const velocityError = (Math.random() - 0.5) * 12 * accuracyFactor; // Random velocity adjustment
+
+let finalAngle = bestShot.angle + angleError;
+let finalVelocity = bestShot.velocity + velocityError;
+// ... (clamp values and fire) ...
+        </code></pre>
+        <p>In essence, the AI operates by <strong>exploring possibilities</strong> based on the game's physics, <strong>selecting the most promising calculated outcome</strong>, and then injecting a touch of <strong>randomness</strong>.</p>
+    </div>
+
+    <div class="section">
+        <h2>Key Differences from Deep Learning (DL)</h2>
+        <p>The AI in Gorillas stands in contrast to Deep Learning models in several fundamental ways:</p>
+        <ul>
+            <li><strong>Rules vs. Learning:</strong> Gorillas AI adheres to explicit <strong>physics rules</strong>, while DL models <strong>learn patterns</strong> from extensive training data.</li>
+            <li><strong>Knowledge:</strong> The Gorillas AI's "knowledge" is the <strong>coded physics</strong>. DL models store knowledge implicitly within their <strong>network parameters</strong>, derived from data.</li>
+            <li><strong>Data:</strong> The Gorillas AI operates without needing <strong>external data</strong>, a stark contrast to DL which requires significant <strong>training datasets</strong>.</li>
+            <li><strong>Transparency:</strong> The decision-making process of the Gorillas AI is <strong>clear and traceable</strong>. DL models are often considered <strong>"black boxes"</strong>, making it difficult to understand their reasoning.</li>
+            <li><strong>Adaptability:</strong> The strategy of the Gorillas AI is <strong>fixed</strong> (with added randomness). DL models possess the ability to <strong>adapt and generalize</strong> based on their training data, though this can also lead to unexpected failures.</li>
+        </ul>
+        <p>To summarize, the Gorillas AI <strong>calculates based on predefined rules</strong>, whereas Deep Learning models <strong>learn from data</strong>.</p>
+    </div>
+
+    <div class="section">
+        <h2>Classroom Application & Comparison to Molecular Mechanics</h2>
+        <p>The Gorillas game and its AI offer a valuable educational tool for demonstrating fundamental <strong>physics concepts</strong> like projectile motion, gravity, and the influence of variables such as angle, velocity, and wind. It also illustrates key <strong>programming principles</strong>, including simulation loops, rule-based AI search, and event handling. Similar to how <strong>molecular mechanics simulations</strong> calculate atomic interactions and movements based on defined <strong>force fields</strong> (e.g., bond energies, electrostatics), this game simulates a projectile's trajectory using simplified physics laws. Both approaches rely on <strong>step-by-step calculations from defined rules</strong> to predict outcomes. However, Gorillas models macroscopic trajectories, while molecular mechanics focuses on microscopic interactions and demands significantly more complex force fields and computational resources.</p>
+    </div>
+
+    <div class="section">
+        <h2>Educational Outcomes for Students</h2>
+        <p>Engaging with or modifying this game can lead to several important educational outcomes for students:</p>
+        <ul>
+            <li><strong>Physics Intuition:</strong> Develop a tangible understanding of how <strong>angle, velocity, gravity, and external forces (wind)</strong> affect projectile paths.</li>
+            <li><strong>Computational Thinking:</strong> Appreciate how complex behaviors, such as aiming, can arise from simple, iterative calculations within a <strong>simulation loop</strong>.</li>
+            <li><strong>Programming Fundamentals:</strong> Grasp core programming concepts like <strong>variables, loops</strong> (for simulation and AI search), <strong>conditional statements</strong> (for collision detection), and <strong>functions</strong> (for code modularity).</li>
+            <li><strong>Basic AI Concepts:</strong> Learn about <strong>rule-based systems, search algorithms</strong> (exploring different parameters), and <strong>evaluation functions</strong> (determining the "best" shot).</li>
+            <li><strong>Problem Solving:</strong> Enhance skills in <strong>predicting outcomes</strong> based on inputs and in <strong>debugging or modifying code</strong> to alter game behavior or improve the AI.</li>
+            <li><strong>Model Limitations:</strong> Recognize that simulations are <strong>models of reality</strong> and involve simplifications (e.g., neglecting air resistance beyond simple wind).</li>
+        </ul>
+    </div>
+</body>
+</html>
