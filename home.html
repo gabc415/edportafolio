@@ -50,14 +50,12 @@
              color: #FFFF55; /* Yellow highlight */
         }
 
-
         #canvasContainer {
             position: relative; /* Needed for absolute positioning of messages over canvas */
             width: 800px;
             height: 500px;
-             max-width: 95%;
+            max-width: 95%;
         }
-
 
         #gameCanvas {
             border: 1px solid #AAAAAA;
@@ -84,7 +82,6 @@
             border-radius: 10px;
         }
 
-
         #controls {
             margin-top: 10px;
             padding: 10px;
@@ -98,8 +95,8 @@
             align-items: center;
             gap: 10px;
             width: 800px;
-             max-width: 95%;
-             box-sizing: border-box;
+            max-width: 95%;
+            box-sizing: border-box;
         }
 
         #controls label {
@@ -134,9 +131,8 @@
             cursor: not-allowed;
             border-style: inset;
         }
-
     </style>
-    </head>
+</head>
 <body>
     <h1>HTML Gorillas</h1>
 
@@ -149,8 +145,8 @@
 
     <div id="canvasContainer">
         <canvas id="gameCanvas" width="800" height="500"></canvas>
-        <div id="overlayMessage"></div> </div>
-
+        <div id="overlayMessage"></div>
+    </div>
 
     <div id="controls">
         <label for="angleInput">Angle (0-180):</label>
@@ -174,7 +170,6 @@
         const velocityInput = document.getElementById('velocityInput');
         const fireButton = document.getElementById('fireButton');
         const overlayMessageDiv = document.getElementById('overlayMessage');
-
 
         // --- Game Constants ---
         const GRAVITY = 0.08;
@@ -224,7 +219,7 @@
             noiseSynth = new Tone.NoiseSynth({ noise: { type: "white" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
             hitSynth = new Tone.Synth({ oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 } }).toDestination();
             winSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.05, decay: 0.2, sustain: 0.3, release: 0.5 } }).toDestination();
-             console.log("Tone.js synths initialized.");
+            console.log("Tone.js synths initialized.");
         }
 
         function playSound(type, options = {}) {
@@ -235,10 +230,9 @@
             // Ensure synths are created (might fail on very fast init)
             if (!synth) setupSounds();
             if (!synth) { // If still fails, log error
-                 console.error("Synths not ready for sound:", type);
-                 return;
+                console.error("Synths not ready for sound:", type);
+                return;
             }
-
 
             try {
                 const now = Tone.now();
@@ -254,33 +248,33 @@
                     case 'hit':
                         hitSynth.triggerAttackRelease("A5", "8n", now); // Sharp hit sound
                         break;
-                     case 'winRound':
+                    case 'winRound':
                         winSynth.triggerAttackRelease("C5", "8n", now);
                         winSynth.triggerAttackRelease("E5", "8n", now + 0.2);
                         winSynth.triggerAttackRelease("G5", "4n", now + 0.4);
                         break;
                     case 'winGame':
-                         winSynth.triggerAttackRelease("C4", "8n", now);
-                         winSynth.triggerAttackRelease("E4", "8n", now + 0.15);
-                         winSynth.triggerAttackRelease("G4", "8n", now + 0.3);
-                         winSynth.triggerAttackRelease("C5", "4n", now + 0.45);
-                         winSynth.triggerAttackRelease("G5", "2n", now + 0.7); // Longer final note
+                        winSynth.triggerAttackRelease("C4", "8n", now);
+                        winSynth.triggerAttackRelease("E4", "8n", now + 0.15);
+                        winSynth.triggerAttackRelease("G4", "8n", now + 0.3);
+                        winSynth.triggerAttackRelease("C5", "4n", now + 0.45);
+                        winSynth.triggerAttackRelease("G5", "2n", now + 0.7); // Longer final note
                         break;
                     case 'fall':
-                         noiseSynth.volume.value = -6; // Quieter noise
-                         noiseSynth.triggerAttackRelease("4n", now);
-                         synth.triggerAttackRelease("A2", "4n", now); // Descending pitch simulation
-                         synth.setNote("E2", now + Tone.Time("8n").toSeconds());
-                          synth.setNote("C2", now + Tone.Time("4n").toSeconds());
-                         noiseSynth.volume.value = 0; // Reset volume
-                         break;
+                        noiseSynth.volume.value = -6; // Quieter noise
+                        noiseSynth.triggerAttackRelease("4n", now);
+                        synth.triggerAttackRelease("A2", "4n", now); // Descending pitch simulation
+                        synth.setNote("E2", now + Tone.Time("8n").toSeconds());
+                        synth.setNote("C2", now + Tone.Time("4n").toSeconds());
+                        noiseSynth.volume.value = 0; // Reset volume
+                        break;
                 }
             } catch (error) {
-                 console.error("Error playing sound:", type, error);
+                console.error("Error playing sound:", type, error);
             }
         }
 
-         // Function to start Tone.js on first user interaction
+        // Function to start Tone.js on first user interaction
         async function startTone() {
             if (!toneStarted) {
                 await Tone.start();
@@ -289,7 +283,6 @@
                 setupSounds(); // Setup synths after Tone starts
             }
         }
-
 
         // --- Initialization ---
 
@@ -314,7 +307,7 @@
                 currentX += buildingWidth;
             }
             if (buildings.length > 0) {
-                 buildings[buildings.length - 1].width = canvas.width - buildings[buildings.length - 1].x;
+                buildings[buildings.length - 1].width = canvas.width - buildings[buildings.length - 1].x;
             }
         }
 
@@ -330,15 +323,15 @@
                 gorillas[1].x = buildings[buildingIndex2].x + buildings[buildingIndex2].width / 2 - GORILLA_WIDTH / 2;
                 gorillas[1].y = buildings[buildingIndex2].y - GORILLA_HEIGHT;
             } else { // Fallback
-                 if (buildings.length > 0) {
+                if (buildings.length > 0) {
                     gorillas[0].x = buildings[0].x + buildings[0].width / 2 - GORILLA_WIDTH / 2;
                     gorillas[0].y = buildings[0].y - GORILLA_HEIGHT;
                     gorillas[1].x = buildings[buildings.length-1].x + buildings[buildings.length-1].width / 2 - GORILLA_WIDTH / 2;
                     gorillas[1].y = buildings[buildings.length-1].y - GORILLA_HEIGHT;
-                 } else { // No buildings fallback (shouldn't happen)
-                     gorillas[0].x = 50; gorillas[0].y = canvas.height - 50;
-                     gorillas[1].x = canvas.width - 80; gorillas[1].y = canvas.height - 50;
-                 }
+                } else { // No buildings fallback (shouldn't happen)
+                    gorillas[0].x = 50; gorillas[0].y = canvas.height - 50;
+                    gorillas[1].x = canvas.width - 80; gorillas[1].y = canvas.height - 50;
+                }
             }
             gorillas[0].y = Math.max(0, gorillas[0].y);
             gorillas[1].y = Math.max(0, gorillas[1].y);
@@ -377,20 +370,19 @@
 
             // Set message and controls based on current player
             if (currentPlayer === 1) {
-                 setMessage(`Player 1: Enter angle and velocity.`);
-                 enableControls(true);
+                setMessage(`Player 1: Enter angle and velocity.`);
+                enableControls(true);
             } else if (isPlayer2AI) {
-                 setMessage("AI is thinking...");
-                 enableControls(false);
-                 setTimeout(runAIturn, 1500);
+                setMessage("AI is thinking...");
+                enableControls(false);
+                setTimeout(runAIturn, 1500);
             } else { // Human Player 2 (if AI is disabled)
-                 setMessage(`Player 2: Enter angle and velocity.`);
-                 enableControls(true);
+                setMessage(`Player 2: Enter angle and velocity.`);
+                enableControls(true);
             }
         }
 
         // --- Drawing ---
-
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawSun();
@@ -418,28 +410,26 @@
                 ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill entire canvas, clipped area shows
 
                 // Draw windows (also clipped)
-                 ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-                 for (let wy = b.y + 10; wy < canvas.height - 10; wy += 20) {
-                     for (let wx = b.x + 5; wx < b.x + b.width - 5; wx += 15) {
-                          ctx.fillRect(wx, wy, 5, 8);
-                     }
-                 }
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                for (let wy = b.y + 10; wy < canvas.height - 10; wy += 20) {
+                    for (let wx = b.x + 5; wx < b.x + b.width - 5; wx += 15) {
+                        ctx.fillRect(wx, wy, 5, 8);
+                    }
+                }
 
                 ctx.restore(); // Restore context state (remove clipping path)
-
-                 // Optional: Draw border around original building shape? Or leave as is.
-                 // ctx.strokeStyle = "#333";
-                 // ctx.strokeRect(b.x, b.y, b.width, canvas.height - b.y);
             });
 
-
-            // Draw gorillas (same as before)
+            // Draw gorillas
             gorillas.forEach((g, index) => {
                 if (g.hit) {
-                    ctx.strokeStyle = 'red'; ctx.lineWidth = 3;
+                    ctx.strokeStyle = 'red';
+                    ctx.lineWidth = 3;
                     ctx.beginPath();
-                    ctx.moveTo(g.x, g.y); ctx.lineTo(g.x + GORILLA_WIDTH, g.y + GORILLA_HEIGHT);
-                    ctx.moveTo(g.x + GORILLA_WIDTH, g.y); ctx.lineTo(g.x, g.y + GORILLA_HEIGHT);
+                    ctx.moveTo(g.x, g.y);
+                    ctx.lineTo(g.x + GORILLA_WIDTH, g.y + GORILLA_HEIGHT);
+                    ctx.moveTo(g.x + GORILLA_WIDTH, g.y);
+                    ctx.lineTo(g.x, g.y + GORILLA_HEIGHT);
                     ctx.stroke();
                 } else {
                     ctx.fillStyle = g.color;
@@ -449,62 +439,76 @@
                 }
             });
 
-            // Draw banana (same as before)
+            // Draw banana
             if (banana.active) {
-                ctx.fillStyle = 'yellow'; ctx.beginPath();
+                ctx.fillStyle = 'yellow';
+                ctx.beginPath();
                 ctx.moveTo(banana.x - BANANA_WIDTH / 2, banana.y);
                 ctx.quadraticCurveTo(banana.x, banana.y - BANANA_HEIGHT, banana.x + BANANA_WIDTH / 2, banana.y);
                 ctx.quadraticCurveTo(banana.x, banana.y + BANANA_HEIGHT / 2, banana.x - BANANA_WIDTH / 2, banana.y);
                 ctx.fill();
             }
 
-            // Draw explosion (same as before)
+            // Draw explosion
             if (explosion.active) {
                 const baseSize = explosion.size * 0.5;
                 const flickerSize = baseSize + Math.random() * baseSize;
-                ctx.fillStyle = 'red'; ctx.fillRect(explosion.x - flickerSize / 2, explosion.y - flickerSize / 2, flickerSize, flickerSize);
-                ctx.fillStyle = 'orange'; const outerFlicker = explosion.size + Math.random() * explosion.size * 0.5;
+                ctx.fillStyle = 'red';
+                ctx.fillRect(explosion.x - flickerSize / 2, explosion.y - flickerSize / 2, flickerSize, flickerSize);
+                ctx.fillStyle = 'orange';
+                const outerFlicker = explosion.size + Math.random() * explosion.size * 0.5;
                 ctx.fillRect(explosion.x - outerFlicker / 2, explosion.y - outerFlicker / 2, outerFlicker, outerFlicker);
-                 ctx.fillStyle = 'yellow'; const innerFlicker = baseSize * 0.6 + Math.random() * baseSize * 0.4;
-                 ctx.fillRect(explosion.x - innerFlicker / 2, explosion.y - innerFlicker / 2, innerFlicker, innerFlicker);
+                ctx.fillStyle = 'yellow';
+                const innerFlicker = baseSize * 0.6 + Math.random() * baseSize * 0.4;
+                ctx.fillRect(explosion.x - innerFlicker / 2, explosion.y - innerFlicker / 2, innerFlicker, innerFlicker);
             }
         }
 
-        function drawSun() { // (Same as before)
-            ctx.fillStyle = 'yellow'; ctx.beginPath(); ctx.arc(sun.x, sun.y, SUN_RADIUS, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = 'black'; ctx.beginPath();
+        function drawSun() {
+            ctx.fillStyle = 'yellow';
+            ctx.beginPath();
+            ctx.arc(sun.x, sun.y, SUN_RADIUS, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
             ctx.arc(sun.x - SUN_RADIUS * 0.3, sun.y - SUN_RADIUS * 0.2, 3, 0, Math.PI * 2); // Left eye
             ctx.arc(sun.x + SUN_RADIUS * 0.3, sun.y - SUN_RADIUS * 0.2, 3, 0, Math.PI * 2); // Right eye
             ctx.fill();
-            ctx.beginPath(); ctx.lineWidth = 2; ctx.strokeStyle = 'black';
-            if (sun.mood === 'happy') { ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.1, SUN_RADIUS * 0.5, 0.2 * Math.PI, 0.8 * Math.PI); }
-            else if (sun.mood === 'sad') { ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.6, SUN_RADIUS * 0.5, 1.2 * Math.PI, 1.8 * Math.PI); }
-            else { ctx.moveTo(sun.x - SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4); ctx.lineTo(sun.x + SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4); }
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'black';
+            if (sun.mood === 'happy') {
+                ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.1, SUN_RADIUS * 0.5, 0.2 * Math.PI, 0.8 * Math.PI);
+            } else if (sun.mood === 'sad') {
+                ctx.arc(sun.x, sun.y + SUN_RADIUS * 0.6, SUN_RADIUS * 0.5, 1.2 * Math.PI, 1.8 * Math.PI);
+            } else {
+                ctx.moveTo(sun.x - SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4);
+                ctx.lineTo(sun.x + SUN_RADIUS * 0.4, sun.y + SUN_RADIUS * 0.4);
+            }
             ctx.stroke();
         }
 
         // --- Game Logic ---
-
         function fireBanana() {
-             if (!gameActive || !roundActive || banana.active) return;
+            if (!gameActive || !roundActive || banana.active) return;
 
-             startTone(); // Ensure Tone.js is started by user interaction
+            startTone(); // Ensure Tone.js is started by user interaction
 
-             let angleDeg, velocity;
-             // Read values only if it's human player
-             if (currentPlayer === 1 || !isPlayer2AI) {
-                 angleDeg = parseFloat(angleInput.value);
-                 velocity = parseFloat(velocityInput.value);
+            let angleDeg, velocity;
+            // Read values only if it's human player
+            if (currentPlayer === 1 || !isPlayer2AI) {
+                angleDeg = parseFloat(angleInput.value);
+                velocity = parseFloat(velocityInput.value);
 
-                 if (isNaN(angleDeg) || isNaN(velocity) || velocity <= 0 || angleDeg < 0 || angleDeg > 180) {
-                     setMessage("Invalid input. Angle 0-180, Velocity > 0.");
-                     enableControls(true); // Re-enable for correction
-                     return;
-                 }
-             } else { // AI's turn, values already set
-                  angleDeg = parseFloat(angleInput.value);
-                  velocity = parseFloat(velocityInput.value);
-             }
+                if (isNaN(angleDeg) || isNaN(velocity) || velocity <= 0 || angleDeg < 0 || angleDeg > 180) {
+                    setMessage("Invalid input. Angle 0-180, Velocity > 0.");
+                    enableControls(true); // Re-enable for correction
+                    return;
+                }
+            } else { // AI's turn, values already set
+                angleDeg = parseFloat(angleInput.value);
+                velocity = parseFloat(velocityInput.value);
+            }
 
             enableControls(false);
             setMessage("");
@@ -531,63 +535,52 @@
         }
 
         function gameLoop() {
-            // Main loop continues as long as something is animating OR the game/round is active
-            if (!gameActive) return; // Stop if match is over
+            if (!gameActive) return;
 
             if (!banana.active && !explosion.active && !roundActive) {
-                 // Round ended, but game might continue. Handled by endRound logic.
-                 animationFrameId = null;
-                 return;
+                animationFrameId = null;
+                return;
             }
-             if (!banana.active && !explosion.active && roundActive) {
-                 // Nothing happening, waiting for input
-                 animationFrameId = null;
-                 // Ensure controls are enabled for the correct player
-                 enableControls(true);
-                 return;
-             }
+            if (!banana.active && !explosion.active && roundActive) {
+                animationFrameId = null;
+                enableControls(true);
+                return;
+            }
 
-
-            // --- Banana Physics and Collision ---
             if (banana.active) {
                 banana.vx += wind;
                 banana.vy += GRAVITY;
                 banana.x += banana.vx;
                 banana.y += banana.vy;
 
-                let hitTarget = null; // null, 'building', 'gorilla1', 'gorilla2', 'offscreen'
+                let hitTarget = null;
                 let hitObject = null;
 
-                // Off screen check
                 if (banana.x < -BANANA_WIDTH * 3 || banana.x > canvas.width + BANANA_WIDTH * 3 || banana.y > canvas.height + BANANA_HEIGHT * 3) {
                     hitTarget = 'offscreen';
                 }
 
-                // Building collision
                 if (!hitTarget) {
                     for (const building of buildings) {
-                        // Check if banana center is within building bounds (horizontally and vertically below top)
                         if (banana.x >= building.x && banana.x <= building.x + building.width &&
                             banana.y >= building.y && banana.y <= canvas.height)
                         {
-                             // More precise check: is banana center *not* inside an existing crater?
-                             let inCrater = false;
-                             for(const crater of building.damage) {
-                                 if (distSq(banana.x, banana.y, crater.x, crater.y) < crater.radius * crater.radius) {
-                                     inCrater = true;
-                                     break;
-                                 }
-                             }
-                             if (!inCrater) {
+                            let inCrater = false;
+                            for(const crater of building.damage) {
+                                if (distSq(banana.x, banana.y, crater.x, crater.y) < crater.radius * crater.radius) {
+                                    inCrater = true;
+                                    break;
+                                }
+                            }
+                            if (!inCrater) {
                                 hitTarget = 'building';
                                 hitObject = building;
                                 break;
-                             }
+                            }
                         }
                     }
                 }
 
-                // Gorilla collision
                 if (!hitTarget) {
                     gorillas.forEach((g, index) => {
                         if (!g.hit &&
@@ -599,72 +592,60 @@
                     });
                 }
 
-                // --- Handle Hit ---
                 if (hitTarget) {
                     const impactX = banana.x;
                     const impactY = banana.y;
                     banana.active = false;
-                    startExplosion(impactX, impactY); // Start explosion visual/sound
+                    startExplosion(impactX, impactY);
 
                     if (hitTarget === 'building' && hitObject) {
                         setMessage("Hit a building!");
-                        damageBuilding(hitObject, impactX, impactY, EXPLOSION_RADIUS); // Apply damage logic
+                        damageBuilding(hitObject, impactX, impactY, EXPLOSION_RADIUS);
                         sun.mood = 'normal';
                     } else if (hitTarget.startsWith('gorilla')) {
                         const hitPlayerIndex = parseInt(hitTarget.slice(-1)) - 1;
                         gorillas[hitPlayerIndex].hit = true;
                         playSound('hit');
-                        endRound(currentPlayer); // Current player wins the round
-                    } else { // Offscreen
+                        endRound(currentPlayer);
+                    } else {
                         setMessage("Missed!");
                         sun.mood = 'normal';
-                        // Don't end round on miss, just wait for explosion to finish
                     }
                 }
-            } // End banana active check
+            }
 
-            // --- Update Explosion ---
             if (explosion.active) {
                 explosion.size += 2;
                 explosion.timer--;
                 if (explosion.timer <= 0) {
                     explosion.active = false;
-                    // Check support AFTER explosion visual finishes and ONLY if round is still active
                     if (roundActive) {
                         checkGorillaSupport();
                     }
-                    // If round ended during explosion (e.g., by gorilla hit), the endRound logic handles the next step.
-                    // If round didn't end, switch player.
                     if (roundActive) {
-                         switchPlayer();
+                        switchPlayer();
                     }
                 }
-            } // End explosion active check
-
-            draw(); // Redraw the scene
-
-            // Continue loop if something is active or round is ongoing
-            if (gameActive && (banana.active || explosion.active || roundActive)) {
-                 animationFrameId = requestAnimationFrame(gameLoop);
-            } else if (!gameActive) {
-                 // Game over, final message handled elsewhere
             }
 
-        } // End gameLoop
+            draw();
+
+            if (gameActive && (banana.active || explosion.active || roundActive)) {
+                animationFrameId = requestAnimationFrame(gameLoop);
+            } else if (!gameActive) {
+                // Game over handling
+            }
+        }
 
         function damageBuilding(building, x, y, radius) {
-             // Add crater data to the building object
-             // Ensure crater is somewhat within building bounds for relevance
             if (x > building.x - radius && x < building.x + building.width + radius &&
                 y > building.y - radius && y < canvas.height + radius) {
-                 building.damage.push({ x: x, y: y, radius: radius });
-                 // Optional: Check if damage destroys gorilla support immediately
-                 // checkGorillaSupport(); // Could cause issues if called mid-explosion? Better after.
+                building.damage.push({ x: x, y: y, radius: radius });
             }
         }
 
         function checkGorillaSupport() {
-             if (!roundActive) return; // Don't check if round already ended
+            if (!roundActive) return;
 
             let roundEndedByFall = false;
             gorillas.forEach((g, index) => {
@@ -676,32 +657,23 @@
 
                 for (const building of buildings) {
                     if (gorillaCenterX >= building.x && gorillaCenterX <= building.x + building.width) {
-                         // Check if bottom is above the effective top surface (considering craters)
-                         let effectiveTopY = building.y; // Start with original top
-
-                         // Is the gorilla standing over a crater?
-                         let overCrater = false;
-                         for (const crater of building.damage) {
-                             // If gorilla center X is within crater horizontal span
-                             if (gorillaCenterX > crater.x - crater.radius && gorillaCenterX < crater.x + crater.radius) {
-                                // Calculate crater edge Y at gorilla's X
+                        let effectiveTopY = building.y;
+                        let overCrater = false;
+                        for (const crater of building.damage) {
+                            if (gorillaCenterX > crater.x - crater.radius && gorillaCenterX < crater.x + crater.radius) {
                                 const dx = gorillaCenterX - crater.x;
                                 const craterEdgeY = crater.y + Math.sqrt(Math.max(0, crater.radius * crater.radius - dx * dx));
-                                effectiveTopY = Math.max(effectiveTopY, craterEdgeY); // Highest point below gorilla matters
-                                if (gorillaBottomY >= effectiveTopY - 5) { // If feet are at/below crater edge
-                                     overCrater = true;
+                                effectiveTopY = Math.max(effectiveTopY, craterEdgeY);
+                                if (gorillaBottomY >= effectiveTopY - 5) {
+                                    overCrater = true;
                                 }
-                             }
-                         }
-
-
-                         // Check if gorilla's bottom is on or slightly above the effective top
-                         if (gorillaBottomY >= effectiveTopY - 5 && gorillaBottomY < effectiveTopY + 10) {
+                            }
+                        }
+                        if (gorillaBottomY >= effectiveTopY - 5 && gorillaBottomY < effectiveTopY + 10) {
                             supported = true;
-                            // Adjust gorilla Y to sit precisely on the support surface
                             g.y = effectiveTopY - GORILLA_HEIGHT;
-                            break; // Found support on this building
-                         }
+                            break;
+                        }
                     }
                 }
 
@@ -710,61 +682,54 @@
                     playSound('fall');
                     g.hit = true;
                     const opponentIndex = index === 0 ? 1 : 0;
-                    endRound(opponentIndex + 1); // Opponent wins the round
-                    roundEndedByFall = true; // Prevent multiple fall triggers per frame
+                    endRound(opponentIndex + 1);
+                    roundEndedByFall = true;
                 }
             });
         }
 
         function startExplosion(x, y) {
-            explosion.x = x; explosion.y = y;
-            explosion.size = 5; explosion.active = true;
+            explosion.x = x;
+            explosion.y = y;
+            explosion.size = 5;
+            explosion.active = true;
             explosion.timer = EXPLOSION_DURATION;
             playSound('explosion');
         }
 
-        // --- Round and Game End Logic ---
         function endRound(winnerPlayerNum) {
-             if (!roundActive) return; // Prevent multiple calls
+            if (!roundActive) return;
 
-             roundActive = false; // Mark round as ended
-             cancelAnimationFrame(animationFrameId); // Stop animation loop if running
-             animationFrameId = null;
+            roundActive = false;
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
 
-             roundScores[`player${winnerPlayerNum}`]++;
-             updateUI(); // Update round score display
+            roundScores[`player${winnerPlayerNum}`]++;
+            updateUI();
 
-             // Check for game win
-             if (roundScores[`player${winnerPlayerNum}`] >= ROUNDS_TO_WIN) {
-                 gameActive = false; // Match over
-                 showOverlayMessage(`Player ${winnerPlayerNum} Wins the Match! (${roundScores.player1}-${roundScores.player2})`, true);
-                 playSound('winGame');
-                 enableControls(false); // Disable controls permanently
-             } else {
-                 // Round over, but match continues
-                 showOverlayMessage(`Player ${winnerPlayerNum} Wins Round! (${roundScores.player1}-${roundScores.player2})`, false);
-                 playSound('winRound');
-                 // Set current player for the *next* round (loser starts? or alternate?)
-                 // Let's alternate:
-                 currentPlayer = currentPlayer === 1 ? 2 : 1;
-                 // Start next round after a delay
-                 setTimeout(resetRound, 3000); // 3 second delay
-             }
+            if (roundScores[`player${winnerPlayerNum}`] >= ROUNDS_TO_WIN) {
+                gameActive = false;
+                showOverlayMessage(`Player ${winnerPlayerNum} Wins the Match! (${roundScores.player1}-${roundScores.player2})`, true);
+                playSound('winGame');
+                enableControls(false);
+            } else {
+                showOverlayMessage(`Player ${winnerPlayerNum} Wins Round! (${roundScores.player1}-${roundScores.player2})`, false);
+                playSound('winRound');
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                setTimeout(resetRound, 3000);
+            }
         }
 
         function showOverlayMessage(message, isGameOver) {
-             overlayMessageDiv.textContent = message;
-             overlayMessageDiv.style.display = 'block';
-             // No automatic hiding if game over, requires refresh
+            overlayMessageDiv.textContent = message;
+            overlayMessageDiv.style.display = 'block';
         }
 
-
         function switchPlayer() {
-            // Only switch if round is active and no animations are playing
             if (!roundActive || banana.active || explosion.active) return;
 
             currentPlayer = currentPlayer === 1 ? 2 : 1;
-            updateUI(); // Update player highlight
+            updateUI();
 
             if (currentPlayer === 2 && isPlayer2AI) {
                 enableControls(false);
@@ -777,15 +742,13 @@
         }
 
         // --- UI Updates ---
-
         function updateUI() {
             rounds1Span.textContent = roundScores.player1;
             rounds2Span.textContent = roundScores.player2;
             windInfoSpan.textContent = (wind * 50).toFixed(0);
 
-            // Highlight active player info
-             player1InfoSpan.classList.toggle('active-player', currentPlayer === 1 && roundActive && gameActive);
-             player2InfoSpan.classList.toggle('active-player', currentPlayer === 2 && roundActive && gameActive);
+            player1InfoSpan.classList.toggle('active-player', currentPlayer === 1 && roundActive && gameActive);
+            player2InfoSpan.classList.toggle('active-player', currentPlayer === 2 && roundActive && gameActive);
         }
 
         function setMessage(msg) {
@@ -793,7 +756,6 @@
         }
 
         function enableControls(enabled) {
-             // Enable only if game & round active, it's human turn, and no animations
             const humanTurn = (currentPlayer === 1 || !isPlayer2AI);
             const controlsShouldBeEnabled = enabled && gameActive && roundActive && humanTurn && !banana.active && !explosion.active;
 
@@ -802,100 +764,125 @@
             fireButton.disabled = !controlsShouldBeEnabled;
         }
 
-
-        // --- AI Logic (Mostly Unchanged) ---
-
-        function distSq(x1, y1, x2, y2) { /* ... same ... */
-            const dx = x1 - x2; const dy = y1 - y2; return dx * dx + dy * dy;
+        // --- AI Logic ---
+        function distSq(x1, y1, x2, y2) {
+            const dx = x1 - x2;
+            const dy = y1 - y2;
+            return dx * dx + dy * dy;
         }
 
-        function simulateThrow(startX, startY, angleDeg, velocity) { /* ... same ... */
-            const power = velocity / 6; const angleRad = angleDeg * Math.PI / 180;
-            let simX = startX; let simY = startY;
-            let simVx = Math.cos(angleRad) * power; let simVy = -Math.sin(angleRad) * power;
+        function simulateThrow(startX, startY, angleDeg, velocity) {
+            const power = velocity / 6;
+            const angleRad = angleDeg * Math.PI / 180;
+            let simX = startX;
+            let simY = startY;
+            let simVx = Math.cos(angleRad) * power;
+            let simVy = -Math.sin(angleRad) * power;
             const maxSteps = 500;
             for (let i = 0; i < maxSteps; i++) {
-                simVx += wind; simVy += GRAVITY; simX += simVx; simY += simVy;
-                if (simX < -BANANA_WIDTH * 3 || simX > canvas.width + BANANA_WIDTH * 3 || simY > canvas.height + BANANA_HEIGHT * 3) { return { x: simX - simVx, y: simY - simVy }; }
+                simVx += wind;
+                simVy += GRAVITY;
+                simX += simVx;
+                simY += simVy;
+                if (simX < -BANANA_WIDTH * 3 || simX > canvas.width + BANANA_WIDTH * 3 || simY > canvas.height + BANANA_HEIGHT * 3) {
+                    return { x: simX - simVx, y: simY - simVy };
+                }
                 for (const building of buildings) {
-                    // Simplified check for simulation speed: ignore craters during simulation
-                    if (simX >= building.x && simX <= building.x + building.width && simY >= building.y) { return { x: simX, y: simY }; }
+                    if (simX >= building.x && simX <= building.x + building.width && simY >= building.y) {
+                        return { x: simX, y: simY };
+                    }
                 }
                 const target = gorillas[0];
-                if (simX >= target.x && simX <= target.x + GORILLA_WIDTH && simY >= target.y && simY <= target.y + GORILLA_HEIGHT) { return { x: simX, y: simY }; }
+                if (simX >= target.x && simX <= target.x + GORILLA_WIDTH && simY >= target.y && simY <= target.y + GORILLA_HEIGHT) {
+                    return { x: simX, y: simY };
+                }
             }
             return { x: simX, y: simY };
         }
 
-         function runAIturn() { /* ... mostly same, uses requestAnimationFrame for chunking ... */
-             if (!gameActive || !roundActive) return;
-             setMessage("AI calculating...");
-             const target = gorillas[0]; const aiGorilla = gorillas[1];
-             const startX = aiGorilla.x; const startY = aiGorilla.y + GORILLA_HEIGHT / 2;
-             const targetX = target.x + GORILLA_WIDTH / 2; const targetY = target.y + GORILLA_HEIGHT / 2;
-             let bestShot = { angle: 90, velocity: 50, distance: Infinity };
-             const angleMin = 5; const angleMax = 175; const angleStep = 4;
-             const velocityMin = 15; const velocityMax = 95; const velocityStep = 4;
-             let currentAngle = angleMin;
+        function runAIturn() {
+            if (!gameActive || !roundActive) return;
+            setMessage("AI calculating...");
+            const target = gorillas[0];
+            const aiGorilla = gorillas[1];
+            const startX = aiGorilla.x;
+            const startY = aiGorilla.y + GORILLA_HEIGHT / 2;
+            const targetX = target.x + GORILLA_WIDTH / 2;
+            const targetY = target.y + GORILLA_HEIGHT / 2;
+            let bestShot = { angle: 90, velocity: 50, distance: Infinity };
+            const angleMin = 5;
+            const angleMax = 175;
+            const angleStep = 4;
+            const velocityMin = 15;
+            const velocityMax = 95;
+            const velocityStep = 4;
+            let currentAngle = angleMin;
 
-             function simulateChunk() {
-                 if (!gameActive || !roundActive) return; // Stop if game/round ended
-                 const angleLimit = Math.min(angleMax, currentAngle + angleStep * 5);
-                 for (let angle = currentAngle; angle <= angleLimit; angle += angleStep) {
-                     for (let velocity = velocityMin; velocity <= velocityMax; velocity += velocityStep) {
-                         const landingPos = simulateThrow(startX, startY, angle, velocity);
-                         if (landingPos) {
-                             const distance = distSq(landingPos.x, landingPos.y, targetX, targetY);
-                             if (distance < bestShot.distance) {
-                                 bestShot.distance = distance; bestShot.angle = angle; bestShot.velocity = velocity;
-                             }
-                         }
-                     }
-                 }
-                 currentAngle = angleLimit + angleStep;
-                 if (currentAngle <= angleMax) {
-                     requestAnimationFrame(simulateChunk);
-                 } else {
-                     finalizeAIThrow(bestShot);
-                 }
-             }
-             simulateChunk(); // Start simulation
-         }
+            function simulateChunk() {
+                if (!gameActive || !roundActive) return;
+                const angleLimit = Math.min(angleMax, currentAngle + angleStep * 5);
+                for (let angle = currentAngle; angle <= angleLimit; angle += angleStep) {
+                    for (let velocity = velocityMin; velocity <= velocityMax; velocity += velocityStep) {
+                        const landingPos = simulateThrow(startX, startY, angle, velocity);
+                        if (landingPos) {
+                            const distance = distSq(landingPos.x, landingPos.y, targetX, targetY);
+                            if (distance < bestShot.distance) {
+                                bestShot.distance = distance;
+                                bestShot.angle = angle;
+                                bestShot.velocity = velocity;
+                            }
+                        }
+                    }
+                }
+                currentAngle = angleLimit + angleStep;
+                if (currentAngle <= angleMax) {
+                    requestAnimationFrame(simulateChunk);
+                } else {
+                    finalizeAIThrow(bestShot);
+                }
+            }
+            simulateChunk();
+        }
 
-         function finalizeAIThrow(bestShot) { /* ... same imperfection logic ... */
-             if (!gameActive || !roundActive) return;
-             const accuracyFactor = Math.min(1, Math.sqrt(bestShot.distance) / 150);
-             const angleError = (Math.random() - 0.5) * 8 * accuracyFactor;
-             const velocityError = (Math.random() - 0.5) * 12 * accuracyFactor;
-             let finalAngle = bestShot.angle + angleError;
-             let finalVelocity = bestShot.velocity + velocityError;
-             finalAngle = Math.max(0, Math.min(180, finalAngle));
-             finalVelocity = Math.max(1, Math.min(100, finalVelocity));
-             setMessage(`AI fires! Angle: ${finalAngle.toFixed(1)}, Vel: ${finalVelocity.toFixed(1)}`);
-             angleInput.value = finalAngle.toFixed(1);
-             velocityInput.value = finalVelocity.toFixed(1);
-             setTimeout(() => {
-                 if (gameActive && roundActive) { // Check again before firing
-                     fireBanana();
-                 }
-             }, 300);
-         }
-
+        function finalizeAIThrow(bestShot) {
+            if (!gameActive || !roundActive) return;
+            const accuracyFactor = Math.min(1, Math.sqrt(bestShot.distance) / 150);
+            const angleError = (Math.random() - 0.5) * 8 * accuracyFactor;
+            const velocityError = (Math.random() - 0.5) * 12 * accuracyFactor;
+            let finalAngle = bestShot.angle + angleError;
+            let finalVelocity = bestShot.velocity + velocityError;
+            finalAngle = Math.max(0, Math.min(180, finalAngle));
+            finalVelocity = Math.max(1, Math.min(100, finalVelocity));
+            setMessage(`AI fires! Angle: ${finalAngle.toFixed(1)}, Vel: ${finalVelocity.toFixed(1)}`);
+            angleInput.value = finalAngle.toFixed(1);
+            velocityInput.value = finalVelocity.toFixed(1);
+            setTimeout(() => {
+                if (gameActive && roundActive) {
+                    fireBanana();
+                }
+            }, 300);
+        }
 
         // --- Event Listeners ---
         fireButton.addEventListener('click', fireBanana);
-        // Add listener to start Tone.js on first click anywhere reliable
         document.body.addEventListener('click', startTone, { once: true });
-        canvas.addEventListener('click', startTone, { once: true }); // Also on canvas click
-
-        // Enter key listeners (same as before)
-         angleInput.addEventListener('keypress', function (e) { if (e.key === 'Enter' && !angleInput.disabled) fireButton.click(); });
-         velocityInput.addEventListener('keypress', function (e) { if (e.key === 'Enter' && !velocityInput.disabled) fireButton.click(); });
-
+        canvas.addEventListener('click', startTone, { once: true });
+        angleInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !angleInput.disabled) fireButton.click();
+        });
+        velocityInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && !velocityInput.disabled) fireButton.click();
+        });
 
         // --- Start Game ---
         setTimeout(initGame, 100); // Brief delay before starting
-
     </script>
-    </body>
+
+    <!-- Added text link at the end of the page -->
+    <div style="text-align: center; margin-top: 10px;">
+        <a href="example1.html" style="color: #FFFF55; font-family: Consolas, 'Courier New', monospace; text-decoration: underline;">
+            How does this work?
+        </a>
+    </div>
+</body>
 </html>
