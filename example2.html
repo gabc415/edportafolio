@@ -1,1 +1,328 @@
-w
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Shift Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f7fafc;
+            color: #4a5568;
+            line-height: 1.7;
+        }
+        .container {
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        header {
+            background-color: #4f46e5;
+            color: #fff;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        header p {
+            font-size: 1.1rem;
+            color: #f7fafc;
+        }
+        main {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        section {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        section h2 {
+            color: #4f46e5;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+        section p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: #4f46e5;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1rem;
+            border: none;
+        }
+        button:hover {
+            background-color: #312e81;
+            transform: translateY(-2px);
+        }
+        #results {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f0f4f8;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+        #results h3 {
+            color: #4f46e5;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        #results p {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            section h2 {
+                font-size: 1.5rem;
+            }
+            .input-group label {
+                font-size: 0.9rem;
+            }
+            .input-group input, .input-group textarea, .input-group select {
+                font-size: 0.9rem;
+                padding: 0.6rem;
+            }
+            button {
+                font-size: 0.9rem;
+                padding: 0.75rem 1.25rem;
+            }
+            #results p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Chemical Shift Calculator</h1>
+            <p>Calculate the estimated chemical shift of a proton in an organic molecule.</p>
+        </div>
+    </header>
+    <main class="container">
+        <section>
+            <h2>Enter Compound Information</h2>
+            <form id="chemical-shift-form">
+                <div class="input-group">
+                    <label for="name">Compound Name:</label>
+                    <input type="text" id="name" name="name" placeholder="e.g., Benzene, Ethanol, Acetone">
+                </div>
+                <div class="input-group">
+                    <label for="structure">Structural Formula (Simplified):</label>
+                    <textarea id="structure" name="structure" placeholder="e.g., CH3-CH2-OH, C6H6, CH3COCH3"></textarea>
+                </div>
+                <div class="input-group">
+                  <label for="protonType">Type of Proton:</label>
+                  <select id="protonType" name="protonType">
+                    <option value="alkyl">Alkyl (CH, CH2, CH3)</option>
+                    <option value="alkene">Alkene (C=CH)</option>
+                    <option value="alkyne">Alkyne (C≡CH)</option>
+                    <option value="aromatic">Aromatic (Ar-H)</option>
+                    <option value="alcohol">Alcohol (R-OH)</option>
+                    <option value="ether">Ether (R-O-CH)</option>
+                    <option value="aldehyde">Aldehyde (R-CHO)</option>
+                    <option value="ketone">Ketone (R-CO-CH)</option>
+                    <option value="carboxylicAcid">Carboxylic Acid (R-COOH)</option>
+                    <option value="ester">Ester (R-CO-O-CH)</option>
+                    <option value="amide">Amide (R-CO-NH-CH)</option>
+                    <option value="amine">Amine (R-NH-CH, R-NH2)</option>
+                    <option value="halide">Halide (R-CH-X, X=Cl, Br, I)</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                    <label for="substituents">Electronegative Substituents (if any):</label>
+                    <textarea id="substituents" name="substituents" placeholder="e.g., OH, Cl, NO2 (separate with commas)"></textarea>
+                </div>
+                <button type="submit">Calculate Chemical Shift</button>
+            </form>
+        </section>
+        <section id="results" class="hidden">
+            <h3>Predicted Chemical Shift:</h3>
+            <p id="compound-name"></p>
+            <p id="predicted-shift"></p>
+            <p id="shift-range"></p>
+            <p id="structural-info"></p>
+            <p id="disclaimer"><strong>Disclaimer:</strong> This is an estimated chemical shift based on empirical correlations.  Actual chemical shifts may vary.</p>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Chemical Shift Calculator. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        const chemicalShiftForm = document.getElementById('chemical-shift-form');
+        const resultsSection = document.getElementById('results');
+        const compoundNameDisplay = document.getElementById('compound-name');
+        const predictedShiftDisplay = document.getElementById('predicted-shift');
+        const shiftRangeDisplay = document.getElementById('shift-range');
+        const structuralInfoDisplay = document.getElementById('structural-info');
+
+        chemicalShiftForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const compoundName = document.getElementById('name').value.trim();
+            const structure = document.getElementById('structure').value.trim();
+            const protonType = document.getElementById('protonType').value;
+            const substituentsInput = document.getElementById('substituents').value.trim();
+            const substituents = substituentsInput.split(',').map(s => s.trim().toUpperCase());
+
+            let baseShift = 0;
+             // Base values and ranges are approximations
+            switch (protonType) {
+                case 'alkyl':
+                    baseShift = 1.5;
+                    shiftRangeDisplay.textContent = "Typical range: 0.5 - 5.0 ppm";
+                    break;
+                case 'alkene':
+                    baseShift = 5.5;
+                    shiftRangeDisplay.textContent = "Typical range: 4.5 - 7.0 ppm";
+                    break;
+                case 'alkyne':
+                    baseShift = 2.5;
+                    shiftRangeDisplay.textContent = "Typical range: 2.0 - 3.0 ppm";
+                    break;
+                case 'aromatic':
+                    baseShift = 7.2;
+                    shiftRangeDisplay.textContent = "Typical range: 6.5 - 8.5 ppm";
+                    break;
+                case 'alcohol':
+                    baseShift = 2.0;  // This is highly variable
+                    shiftRangeDisplay.textContent = "Typical range: 0.5 - 5.5 ppm (variable, depends on hydrogen bonding)";
+                    break;
+                case 'ether':
+                    baseShift = 3.7;
+                    shiftRangeDisplay.textContent = "Typical range: 3.2 - 4.2 ppm";
+                    break;
+                 case 'aldehyde':
+                    baseShift = 9.7;
+                    shiftRangeDisplay.textContent = "Typical range: 9.5 - 10.0 ppm";
+                    break;
+                case 'ketone':
+                    baseShift = 2.5;
+                    shiftRangeDisplay.textContent = "Typical range: 2.0 - 3.0 ppm";
+                    break;
+                case 'carboxylicAcid':
+                    baseShift = 11.5; //Very Broad
+                    shiftRangeDisplay.textContent = "Typical range: 10 - 13 ppm (very broad)";
+                    break;
+                case 'ester':
+                    baseShift = 3.8;
+                    shiftRangeDisplay.textContent = "Typical range 3.5 - 4.1 ppm";
+                    break;
+                case 'amide':
+                    baseShift = 7.5;  //Variable
+                    shiftRangeDisplay.textContent = "Typical range: 5 - 9 ppm (variable, broad)";
+                    break;
+                case 'amine':
+                    baseShift = 3.0; //Variable
+                    shiftRangeDisplay.textContent = "Typical range: 1.0 - 5.0 ppm (variable, depends on degree of substitution and hydrogen bonding)";
+                    break;
+                case 'halide':
+                    baseShift = 3.0;
+                    shiftRangeDisplay.textContent = "Typical range: 2.0 - 4.5 ppm";
+                    break;
+                default:
+                    baseShift = 0;
+                    shiftRangeDisplay.textContent = "No typical range available";
+            }
+
+            // Apply adjustments based on substituents.  This is a simplified approach.
+            let substituentAdjustment = 0;
+            substituents.forEach(substituent => {
+                if (substituent === 'OH') {
+                    substituentAdjustment += 2.5;
+                } else if (substituent === 'Cl' || substituent === 'Br') {
+                    substituentAdjustment += 3.0;
+                } else if (substituent === 'I') {
+                    substituentAdjustment += 2.0;
+                } else if (substituent === 'NO2') {
+                    substituentAdjustment += 3.5;
+                } else if (substituent === 'OPh') {
+                    substituentAdjustment += 2.8;
+                } else if (substituent === 'OCH3') {
+                    substituentAdjustment += 3.1;
+                } else if (substituent === 'Ph') {
+                    substituentAdjustment += 2.7;
+                } else if (substituent === 'COCH3') {
+                    substituentAdjustment += 2.4;
+                }
+                 else if (substituent === 'NH2') {
+                    substituentAdjustment += 1.5;
+                }
+            });
+
+            const predictedShift = baseShift + substituentAdjustment;
+
+            compoundNameDisplay.textContent = `Compound Name: ${compoundName}`;
+            predictedShiftDisplay.textContent = `Predicted Chemical Shift: ${predictedShift.toFixed(2)} ppm`;
+            structuralInfoDisplay.textContent = `Assumed Structure: ${structure}, Proton Type: ${protonType}`;
+            resultsSection.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
