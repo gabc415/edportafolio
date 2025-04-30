@@ -9,17 +9,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Custom base styles */
         body {
             font-family: 'Open Sans', sans-serif;
-            background-color: #f9fafb; /* Light background */
+            /* background-color: #f9fafb; Replaced by Tailwind class bg-gray-50 */
             color: #333;
             line-height: 1.7;
         }
+        /* Container style */
         .container {
             max-width: 900px; /* Slightly wider container */
             margin: 0 auto;
             padding: 2rem;
         }
+        /* Custom header style */
         header {
             background-color: #4f46e5; /* Indigo header */
             color: white;
@@ -37,6 +40,7 @@
             font-size: 1.25rem;
             font-weight: 400;
         }
+        /* Custom section style */
         section {
             background-color: white;
             padding: 2rem;
@@ -57,10 +61,17 @@
             color: #555;
             margin-bottom: 1rem;
         }
+        /* Custom list style */
          section ul{
-            list-style-position: inside;
+            list-style-position: inside; /* Keep bullets inside */
+            list-style-type: disc; /* Ensure bullets are visible */
+            margin-left: 1.5rem; /* Add indentation */
             margin-bottom: 1rem;
         }
+         section ul li { /* Add space between list items */
+             margin-bottom: 0.5rem;
+         }
+        /* Custom footer style */
         footer {
             background-color: #e5e7eb; /* Light gray footer */
             color: #777;
@@ -73,9 +84,57 @@
         footer p {
             font-size: 1rem;
         }
+        /* Style link in footer */
+        footer a {
+            color: #4f46e5; /* Match header color */
+            text-decoration: none;
+        }
+         footer a:hover {
+            text-decoration: underline;
+        }
+        /* Optional: Custom style for active nav link */
+        /* nav a.active {
+             font-weight: bold;
+             color: #a5b4fc; // Lighter indigo for active state
+        } */
+
     </style>
 </head>
-<body>
+<body class="bg-gray-50"> <nav class="bg-indigo-700 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center h-16"> <div class="flex items-center">
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="index.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About Me</a>
+                            <a href="philosophy.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Teaching Philosophy</a>
+                            <a href="examples.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Tech Examples</a>
+                            <a href="reflections.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Reflections</a>
+                        </div>
+                    </div>
+                </div>
+                 <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-indigo-700 inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="index.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About Me</a>
+                <a href="philosophy.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Teaching Philosophy</a>
+                <a href="examples.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Tech Examples</a>
+                <a href="reflections.html" class="text-gray-300 hover:bg-indigo-600 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Reflections</a>
+            </div>
+        </div>
+    </nav>
     <header>
         <h1>About Me</h1>
         <p>Chemist and Chemistry Educator</p>
@@ -85,44 +144,43 @@
         <section>
             <h2>Introduction</h2>
             <p>
-                I am an experienced chemist and educator with a strong background in organic chemistry and a passion for integrating technology into teaching. I am currently completing my Ph.D. in Chemistry at the University of Nevada, Reno.
+                I am an experienced chemist and educator with a strong background in organic chemistry and a special interest in incorporating technology in education. I am working toward my Ph.D. in Chemistry at the University of Nevada, Reno.
             </p>
             <p>
-                My research and teaching experience have provided me with a unique perspective on how technology can be used to enhance student learning and engagement in chemistry.
+                My experiences in both research and teaching have provided me with a unique perspective regarding how technology can be used to enable student learning and involvement in chemistry.
             </p>
         </section>
 
         <section>
             <h2>Teaching Experience</h2>
             <p>
-                As a graduate instructor at San Francisco State University and a teaching assistant at the University of Nevada, Reno, I have had the opportunity to instruct undergraduate courses in chemistry labs and chemistry writing. My responsibilities included:
+                I worked as a teaching assistant at the University of Nevada, Reno, and as a graduate instructor at San Francisco State University, instructing undergraduate chemistry labs and chemistry writing courses. My responsibilities included:
             </p>
              <ul>
-                <li>Developing and implementing engaging lesson plans</li>
-                <li>Providing mentorship and guidance to students</li>
-                 <li>Assessing student progress through assignments and exams</li>
-                 <li>Maintaining thorough documentation of student work</li>
+                 <li>Creating lesson plans and incorporating them into active classrooms</li>
+                 <li>Guiding students</li>
+                 <li>Tracking students' progress through assignments and quizzes</li>
+                 <li>Keeping very detailed records of the students' work</li>
             </ul>
             <p>
-                 I am committed to creating a dynamic and inclusive learning environment where students can develop a strong foundation in chemistry and a passion for scientific inquiry.
+                I am committed to creating a rich and diverse learning environment in which students can develop a solid foundation in chemistry and a passion for scientific investigation.
             </p>
-
         </section>
 
         <section>
             <h2>Research Experience</h2>
             <p>
-                My doctoral research has focused on exploring anionic Elbs and Friedel-Crafts reactions for the synthesis of novel 2D polymers. I have employed advanced techniques such as AFM, XRD, NMR, and STM to characterize the resulting structures, molecular architecture, surface morphology, and electronic properties.
+                My PhD research has included research into anionic Elbs and Friedel-Crafts reactions for the synthesis of novel 2D polymers. I have employed cutting-edge techniques such as AFM, XRD, NMR, and STM to investigate the resultant structures, molecular architecture, surface topography, and electronic properties.
             </p>
             <p>
-                I also have experience in applying machine learning algorithms for data analysis and materials modeling, contributing to improved compound synthesis and identification processes.
+                I also have experience in applying machine learning algorithms for materials modeling and data analysis to support more improved compound identification and synthesis processes.
             </p>
         </section>
 
-          <section>
+        <section>
             <h2>LMM Training and Prompt Engineering</h2>
             <p>
-               I have working experience in leveraging my subject-matter expertise to train deep learning models, ensuring the accuracy of chemistry and science content. My previous responsibilities have included designing complex prompts for large language models, identifying biases, conducting rigorous testing, improving model reasoning, and evaluating outputs to enhance model performance.
+                I possess experience in using my subject-matter knowledge to train deep learning models to accurately deliver chemistry and science content. Some of my past projects involved creating intricate prompts for large language models, discovering biases, intensifying testing, developing model reasoning, and reviewing outputs to increase model effectiveness.
             </p>
         </section>
 
@@ -135,10 +193,35 @@
             </ul>
         </section>
     </main>
-
     <footer>
-        <p>&copy; 2024 Gabriel Cabrera. All rights reserved.</p>
-        <p><a href="mailto:gabriel.cabrera@outlook.com">gabriel.cabrera@outlook.com</a></p>
+        <p>&copy; 2024 Gabriel Cabrera. All rights reserved.</p> <p><a href="mailto:gabriel.cabrera@outlook.com">gabriel.cabrera@outlook.com</a></p>
     </footer>
+
+    <script>
+        // Get references to the button, menu, and icons
+        const btn = document.querySelector('button[aria-controls="mobile-menu"]');
+        const menu = document.getElementById('mobile-menu');
+        const iconOpen = btn.querySelector('svg.block'); // Hamburger icon
+        const iconClosed = btn.querySelector('svg.hidden'); // X icon
+
+        // Add click event listener to the button
+        btn.addEventListener('click', () => {
+            // Check if the menu is currently hidden
+            const isOpen = menu.classList.contains('hidden');
+
+            // Toggle the 'hidden' class on the menu panel
+            menu.classList.toggle('hidden');
+
+            // Toggle the 'hidden' and 'block' classes on the icons
+            iconOpen.classList.toggle('hidden');
+            iconOpen.classList.toggle('block');
+            iconClosed.classList.toggle('hidden');
+            iconClosed.classList.toggle('block');
+
+            // Update the aria-expanded attribute for accessibility
+            btn.setAttribute('aria-expanded', !isOpen);
+        });
+    </script>
+
 </body>
 </html>
