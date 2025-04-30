@@ -9,12 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Base body styles */
         body {
             font-family: 'Open Sans', sans-serif;
             line-height: 1.7;
-            color: #4a5568;
-            margin: 0;
+            color: #4a5568; /* Default text color */
+            margin: 0; /* Remove default body margin */
+            background-color: #f7fafc; /* Light gray background */
         }
+        /* Centered container for content */
         .container {
             max-width: 900px;
             margin-left: auto;
@@ -22,15 +25,16 @@
             padding-left: 1rem;
             padding-right: 1rem;
         }
+        /* Navigation bar styles */
         nav {
-            background-color: #f7fafc;
+            background-color: #f7fafc; /* Light background for nav */
             padding-top: 1rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0; /* Subtle border */
         }
         nav ul {
             display: flex;
-            justify-content: center;
+            justify-content: center; /* Center nav items */
             list-style: none;
             padding: 0;
             margin: 0;
@@ -40,76 +44,82 @@
             margin-right: 1rem;
         }
         nav ul li a {
-            color: #4f46e5;
+            color: #4f46e5; /* Indigo link color */
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease, background-color 0.3s ease;
+            transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transitions */
             padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
+            border-radius: 0.375rem; /* Rounded corners */
         }
+        /* Nav link hover effect */
         nav ul li a:hover {
-            color: #fff;
-            background-color: #4f46e5;
+            color: #fff; /* White text on hover */
+            background-color: #4f46e5; /* Indigo background on hover */
         }
+        /* Header styles */
         header {
-            background-color: #4f46e5;
-            color: #fff;
+            background-color: #4f46e5; /* Indigo background */
+            color: #fff; /* White text */
             padding-top: 2rem;
             padding-bottom: 2rem;
             text-align: center;
         }
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2.5rem; /* Large heading */
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
-        header p {
+        header p { /* Subtitle style (if needed) */
             font-size: 1.1rem;
-            color: #f7fafc;
+            color: #f7fafc; /* Lighter text color */
         }
+        /* Main content area styles */
         main {
             padding-top: 3rem;
             padding-bottom: 3rem;
         }
+        /* Section styles */
         section {
-            margin-bottom: 3rem;
-            background-color: #fff;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            margin-bottom: 3rem; /* Space between sections */
+            background-color: #fff; /* White background for sections */
+            border-radius: 0.75rem; /* More rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            padding: 2rem; /* Padding within sections */
         }
         section h2 {
-            color: #4f46e5;
+            color: #4f46e5; /* Indigo heading color */
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 2rem;
             line-height: 1.2;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid #e2e8f0; /* Underline for H2 */
             padding-bottom: 0.5em;
         }
         section h3 {
-            color: #4f46e5;
+            color: #4f46e5; /* Indigo subheading color */
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1rem;
             line-height: 1.3;
         }
         section p {
-            font-size: 1.1rem;
+            font-size: 1.1rem; /* Slightly larger paragraph text */
             margin-bottom: 1.5rem;
-            color: #4a5568;
+            color: #4a5568; /* Standard text color */
         }
+        /* Code block styles */
         section pre {
-            background-color: #edf2f7;
+            background-color: #edf2f7; /* Light gray background */
             padding: 1.5rem;
             border-radius: 0.375rem;
-            overflow-x: auto;
+            overflow-x: auto; /* Allow horizontal scrolling for long code */
             font-size: 0.9rem;
-            color: #2d3748;
+            color: #2d3748; /* Darker text for code */
             border: 1px solid #e2e8f0;
             margin-bottom: 1.5rem;
             line-height: 1.5;
         }
+        /* Inline code styles */
         section code {
             font-family: monospace;
             background-color: #edf2f7;
@@ -117,114 +127,127 @@
             padding: 0.2rem 0.4rem;
             border-radius: 0.375rem;
         }
+        /* List styles */
         section ul {
-            margin-left: 2rem;
+            margin-left: 2rem; /* Indent lists */
             margin-bottom: 1.5rem;
-            list-style-position: inside;
+            list-style-position: inside; /* Bullets inside */
+            list-style-type: disc; /* Use disc bullets */
         }
         section ul li{
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.75rem; /* Space between list items */
         }
+        /* Strong text style - Kept in CSS in case needed later */
         section strong {
-            color: #4f46e5;
+            color: #4f46e5; /* Indigo for strong text */
             font-weight: 600;
         }
+        /* Footer styles */
         footer {
-            background-color: #e5e7eb;
+            background-color: #e5e7eb; /* Light gray footer background */
             color: #4a5568;
             padding-top: 2rem;
             padding-bottom: 2rem;
             text-align: center;
-            border-top: 1px solid #d1d5db;
+            border-top: 1px solid #d1d5db; /* Top border for footer */
         }
         footer p {
             margin-bottom: 0.5rem;
         }
         footer a {
-            color: #4f46e5;
+            color: #4f46e5; /* Indigo link color */
             text-decoration: none;
         }
         footer a:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* Underline on hover */
         }
+        /* Responsive adjustments for smaller screens */
         @media (max-width: 768px) {
             .container {
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
             header h1 {
-                font-size: 2.25rem;
+                font-size: 2.25rem; /* Smaller H1 on mobile */
             }
             section h2 {
-                font-size: 1.75rem;
+                font-size: 1.75rem; /* Smaller H2 on mobile */
             }
+            /* Stack nav items vertically on mobile */
             nav ul {
                 flex-direction: column;
+                align-items: center; /* Center stacked items */
             }
             nav ul li {
                 margin-left: 0.5rem;
                 margin-right: 0.5rem;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5rem; /* Add space between stacked items */
+                width: 80%; /* Make nav items wider on mobile */
+                text-align: center;
+            }
+            nav ul li a {
+                display: block; /* Make link fill the list item */
             }
         }
     </style>
 </head>
 <body>
     <nav>
-        <ul>
-            <li><a href="home.html">Home</a></li>
-            <li><a href="philosophy.html">Philosophy</a></li>
-            <li><a href="examples.html">Examples</a></li>
-            <li><a href="reflections.html">Reflections</a></li>
-             <li><a href="game.html">Game</a></li>
-        </ul>
+        <div class="container"> <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+                <li><a href="philosophy.html">Philosophy</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="reflections.html">Reflections</a></li>
+                <li><a href="game.html">Game</a></li>
+            </ul>
+        </div>
     </nav>
+
     <header>
         <div class="container">
             <h1>Reflections on Teaching with Technology</h1>
-        </div>
+            </div>
     </header>
+
     <main class="container">
         <section>
             <h2>My Journey in GRAD 704</h2>
             <p>
-                This part shares what I've learned about using tech in teaching this semester. It's about how my ideas on using tech to help students learn have changed and grown.
+                This part represents my reflection this semester on technological integration in education. I’ll discuss how my views on using technology to support student learning have changed and grown.
             </p>
         </section>
 
         <section>
             <h2>What I've Learned and How It's Changed My Thinking</h2>
             <p>
-                This class has shown me a lot about using tech in education. Here are the main things I've taken away:
-            </p>
-            <h3>1. Using Tech with a Reason, and Making it Work for Everyone:</h3>
-            <p>
-                I get now that tech in the classroom should always have a clear purpose. It's not just about using the latest gadgets, but about picking tools that actually make learning better and help students reach their goals.
-                I've also learned how important it is to make sure everyone can use these tools.  We need to choose tech that gives all students different ways to learn and show what they know.
+                This class has revealed much to me about the role of technology in education. Here are the key insights I have gathered:
             </p>
 
-            <h3>2. Fun Tools and Getting Students Involved:</h3>
+            <h3>1. Technology utilization with purpose, making it work for the needs of everyone.</h3>
             <p>
-                I've looked at lots of cool tools that can make learning more active and fun. Things like online simulations, group projects, and games can really get students interested and make learning something they want to do.
-                 I also have a better idea of how to use these tools in my teaching to get students working together and sharing ideas.
+                I have come to understand that classroom technology must always serve a particular purpose. It is not a matter of simply using the latest technology but rather selecting tools that serve to enhance learning and assist students in reaching their objectives. I have come to appreciate the need to ensure that everyone has access to these tools. We must select technology that provides all students with various ways of learning and demonstrating knowledge.
             </p>
 
-            <h3>3. New Ways to Check How Students are Doing:</h3>
+            <h3>2. Engaging Students and Involving Tools</h3>
             <p>
-               I've seen how tech can change how we check student progress, making it more real and interesting. I've learned how to use tech to create different kinds of assessments, give quick feedback,
-               and let students show what they've learned in lots of different ways. 
+                I have explored many engaging tools that can make learning more interactive and enjoyable. Online simulations, group projects, and online games are tools that can really spark the interest of students, making learning an activity that they actually look forward to doing. Furthermore, I now also have a clearer vision of how I personally can utilize these tools in my own teaching, encouraging students to collaborate and exchange ideas.
+            </p>
+
+            <h3>3. New Ways to Keep Track of How Students Are Doing</h3>
+            <p>
+                I've witnessed the ability of technology to revolutionize student progress tracking, making it more interactive and authentic. I have discovered through my experiences how to use technology to make various forms of assessments, provide immediate feedback, and allow students to express their learning in numerous ways.
             </p>
         </section>
 
         <section>
-            <h2>What's Next</h2>
+            <h2>What's Next?</h2>
             <p>
-                What I've learned in this class will definitely change how I teach in the future. I want to use what I've learned to make my classes better, more engaging, and open to everyone.
-                I'm excited to keep learning about new tech and getting better at using it in my teaching.  Also, this course has shown me how I can give my students the skills and knowledge
-                to use technology effectively and understand how it works. This is super important in today's world, and I feel much more ready to help them with that.
+                What I have learned in this class will alter the way I teach from now on. I hope to apply what was learned to enhance my classes, make them more interesting, and more accessible to all. I am excited about the continued exploration of new technologies and the development of my skills at integrating them into my teaching. Furthermore, this course has also enlightened me on how I can equip my students with the skills and know-how to successfully utilize technology and comprehend how it functions. This is much too significant nowadays, and I believe I am better prepared to enable them to do so.
             </p>
         </section>
     </main>
+
     <footer>
         <div class="container">
             <p>&copy; 2024 Gabriel Cabrera. All rights reserved.</p>
